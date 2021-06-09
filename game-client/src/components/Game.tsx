@@ -21,7 +21,7 @@ interface Props {}
 const Game: React.FunctionComponent<Props> = () => {
     const [boardSize] = useState<number>(560);
     const [squareSize] = useState<number>(boardSize / 8);
-    const [pieces, setPieces] =
+    const [squares, setSquares] =
         useState<(Piece | null)[][]>(initialiseChessBoard);
     const [activePieceCoordinate, setActivePieceCoordinate] =
         useState<Coordinate | null>(null);
@@ -100,43 +100,24 @@ const Game: React.FunctionComponent<Props> = () => {
 
     const dropPiece = (e: React.MouseEvent) => {
         const chessBoard = chessBoardEl.current;
-        if (activePiece && chessBoard) {
-            // let x = Math.floor(
-            //     (e.clientX - chessBoard.offsetLeft) / SQUARE_SIZE
-            // );
-            // let y = Math.abs(
-            //     Math.ceil(
-            //         (e.clientY - chessBoard.offsetTop - boardSize) / SQUARE_SIZE
-            //     )
-            // );
+        if (activePiece && activePieceCoordinate && chessBoard) {
+            let col = Math.floor(
+                (e.clientX - chessBoard.offsetLeft) / squareSize
+            );
+            let row = Math.abs(
+                Math.ceil(
+                    (e.clientY - chessBoard.offsetTop - boardSize) / squareSize
+                )
+            );
 
-            setPieces((value) => {
-                const pieces = value.map((p) => {
-                    if (
-                        activePieceCoordinate
-                        // && isSamePosition(p.coordinate, activePieceCoordinate)
-                    ) {
-                        // if (
-                        //     referee.isValidMove(
-                        //         p.type,
-                        //         p.coordinate,
-                        //         { x, y },
-                        //         p.isMine,
-                        //         value
-                        //     )
-                        // ) {
-                        //     p.coordinate.x = x;
-                        //     p.coordinate.y = y;
-                        // } else {
-                        //     activePiece.style.position = 'relative';
-                        //     activePiece.style.top = '0px';
-                        //     activePiece.style.left = '0px';
-                        // }
-                    }
-                    return p;
-                });
-                return pieces;
-            });
+            const squaresCopy = squares.slice();
+
+            squaresCopy[row][col] =
+                squaresCopy[activePieceCoordinate.y][activePieceCoordinate.x];
+            squaresCopy[activePieceCoordinate.y][activePieceCoordinate.x] =
+                null;
+
+            setSquares(squaresCopy);
 
             setActivePieceCoordinate(null);
             setActivePiece(null);
@@ -149,7 +130,7 @@ const Game: React.FunctionComponent<Props> = () => {
                 ref={chessBoardEl}
                 boardSize={boardSize}
                 squareSize={squareSize}
-                pieces={pieces}
+                squares={squares}
                 onMouseDown={(e) => grabPiece(e)}
                 onMouseMove={(e) => movePiece(e)}
                 onMouseUp={(e) => dropPiece(e)}

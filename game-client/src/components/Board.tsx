@@ -20,7 +20,7 @@ const ChessBoard = styled.div<ChessBoardProps>`
 interface Props {
     boardSize: number;
     squareSize: number;
-    pieces: (Piece | null)[][];
+    squares: (Piece | null)[][];
     onMouseDown: (e: React.MouseEvent) => void;
     onMouseMove: (e: React.MouseEvent) => void;
     onMouseUp: (e: React.MouseEvent) => void;
@@ -34,7 +34,7 @@ const Board = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
     for (let i = 7; i >= 0; i--) {
         for (let j = 0; j < 8; j++) {
             const squareColor = (i + j) % 2 === 0 ? 'dark' : 'light',
-                piece = props.pieces[i][j];
+                piece = props.squares[i][j];
 
             squares.push(
                 <Square
