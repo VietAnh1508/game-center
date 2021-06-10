@@ -128,28 +128,32 @@ export const getPointsBetween2PointsOnDiagonal = (
     if (p1.x < p2.x) {
         startX = p1.x;
         endX = p2.x;
-    } else {
-        startX = p2.x;
-        endX = p1.x;
-    }
 
-    if (p1.y < p2.y) {
         startY = p1.y;
         endY = p2.y;
     } else {
+        startX = p2.x;
+        endX = p1.x;
+
         startY = p2.y;
         endY = p1.y;
     }
 
     let xCoordinates: Array<number> = [];
-    for (let i = 1; i < endY - startY; i++) {
+    for (let i = 1; i < endX - startX; i++) {
         xCoordinates.push(startX + i);
     }
 
-    // the yAxis is upside down
+    // note: the yAxis is upside down
     let yCoordinates: Array<number> = [];
-    for (let i = endY - startY - 1; i > 0; i--) {
-        yCoordinates.push(startY + i);
+    if (startY > endY) {
+        for (let i = startY - 1; i > endY; i--) {
+            yCoordinates.push(i);
+        }
+    } else {
+        for (let i = 1; i < endY - startY; i++) {
+            yCoordinates.push(startY + i);
+        }
     }
 
     for (let i = 0, len = xCoordinates.length; i < len; i++) {
