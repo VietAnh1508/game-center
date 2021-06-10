@@ -13,15 +13,7 @@ export default class Knight extends Piece {
      * [O] [ ] [ ] [ ] [O]
      * [ ] [O] [ ] [O] [ ]
      */
-    isMovePossible(
-        src: Coordinate,
-        dest: Coordinate,
-        destinationSquare: Piece | null
-    ): boolean {
-        if (destinationSquare?.color === this.color) {
-            return false;
-        }
-
+    isMovePossible(src: Coordinate, dest: Coordinate): boolean {
         if (
             src.x - 2 === dest.x &&
             (src.y - 1 === dest.y || src.y + 1 === dest.y)
@@ -50,6 +42,7 @@ export default class Knight extends Piece {
     }
 
     getSrcToDestPath(src: Coordinate, dest: Coordinate): Array<Coordinate> {
+        // knight can jump over other pieces, so no need to validate the path
         return [];
     }
 }

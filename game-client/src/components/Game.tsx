@@ -96,7 +96,9 @@ const Game: React.FunctionComponent<Props> = () => {
                     activePieceCoordinate,
                     destination
                 );
-            const isLegal = isLegalMove(srcToDestPath);
+            const isLegal =
+                isLegalMove(srcToDestPath) &&
+                sourceSquare?.color !== destinationSquare?.color;
 
             if (isMovePossible && isLegal) {
                 squaresCopy[destination.y][destination.x] =
