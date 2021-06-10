@@ -1,7 +1,7 @@
-// interface Coordinate {
-//     x: number;
-//     y: number;
-// }
+export interface Coordinate {
+    x: number;
+    y: number;
+}
 
 export enum PieceName {
     ROOK,
@@ -21,8 +21,12 @@ export interface PieceInterface {
     color: PieceColor;
     icon: string;
 
-    isMovePossible(src: number, dest: number): boolean;
-    getSrcToDestPath(src: number, dest: number): Array<number>;
+    isMovePossible(
+        src: Coordinate,
+        dest: Coordinate,
+        destinationSquare: Piece | null
+    ): boolean;
+    getSrcToDestPath(src: Coordinate, dest: Coordinate): Array<Coordinate>;
 }
 
 export default abstract class Piece implements PieceInterface {
@@ -38,6 +42,13 @@ export default abstract class Piece implements PieceInterface {
         this.icon = ``;
     }
 
-    abstract isMovePossible(src: number, dest: number): boolean;
-    abstract getSrcToDestPath(src: number, dest: number): Array<number>;
+    abstract isMovePossible(
+        src: Coordinate,
+        dest: Coordinate,
+        destinationSquare: Piece | null
+    ): boolean;
+    abstract getSrcToDestPath(
+        src: Coordinate,
+        dest: Coordinate
+    ): Array<Coordinate>;
 }

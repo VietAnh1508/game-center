@@ -1,4 +1,5 @@
-import Piece, { PieceColor } from './Piece';
+import Piece, { PieceColor, Coordinate } from './Piece';
+import { isSamePosition } from '../helpers/helper';
 
 export default class King extends Piece {
     constructor(player: number, color: PieceColor) {
@@ -6,20 +7,20 @@ export default class King extends Piece {
         this.icon = `assets/images/king_${this.colorSymbol}.png`;
     }
 
-    isMovePossible(src: number, dest: number) {
+    isMovePossible(src: Coordinate, dest: Coordinate) {
         return (
-            src - 9 === dest ||
-            src - 8 === dest ||
-            src - 7 === dest ||
-            src + 1 === dest ||
-            src + 9 === dest ||
-            src + 8 === dest ||
-            src + 7 === dest ||
-            src - 1 === dest
+            isSamePosition({ x: src.x - 1, y: src.y - 1 }, dest) ||
+            isSamePosition({ x: src.x, y: src.y - 1 }, dest) ||
+            isSamePosition({ x: src.x + 1, y: src.y - 1 }, dest) ||
+            isSamePosition({ x: src.x - 1, y: src.y }, dest) ||
+            isSamePosition({ x: src.x + 1, y: src.y }, dest) ||
+            isSamePosition({ x: src.x - 1, y: src.y + 1 }, dest) ||
+            isSamePosition({ x: src.x, y: src.y + 1 }, dest) ||
+            isSamePosition({ x: src.x + 1, y: src.y + 1 }, dest)
         );
     }
 
-    getSrcToDestPath(src: number, dest: number) {
+    getSrcToDestPath(src: Coordinate, dest: Coordinate) {
         return [];
     }
 }

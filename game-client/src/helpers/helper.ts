@@ -1,5 +1,4 @@
-import { Coordinate } from '../components/Game';
-import Piece, { PieceName, PieceColor } from '../pieces/Piece';
+import Piece, { PieceName, PieceColor, Coordinate } from '../pieces/Piece';
 
 import Pawn from '../pieces/Pawn';
 import Rook from '../pieces/Rook';

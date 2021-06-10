@@ -1,13 +1,8 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { initialiseChessBoard } from '../helpers/helper';
-import Piece from '../pieces/Piece';
+import Piece, { Coordinate } from '../pieces/Piece';
 import Board from './Board';
-
-export interface Coordinate {
-    x: number;
-    y: number;
-}
 
 const Container = styled.div`
     display: grid;
@@ -33,43 +28,25 @@ const Game: React.FunctionComponent<Props> = () => {
         const chessBoard = chessBoardEl.current;
 
         if (element.classList.contains('chess-piece') && chessBoard) {
-            const mousePosition: Coordinate = {
-                x: e.clientX,
-                y: e.clientY
-            };
-
-            updateSelectedPieceCoordinate(mousePosition, chessBoard);
+            updateSelectedPieceCoordinate(e, chessBoard);
 
             element.style.position = 'absolute';
-
-            element.style.left = `${mousePosition.x - squareSize / 2}px`;
-            element.style.top = `${mousePosition.y - squareSize / 2}px`;
+            element.style.left = `${e.clientX - squareSize / 2}px`;
+            element.style.top = `${e.clientY - squareSize / 2}px`;
 
             setActivePiece(element);
         }
     };
 
     const updateSelectedPieceCoordinate = (
-        mousePosition: Coordinate,
+        e: React.MouseEvent,
         chessBoard: HTMLDivElement
-    ) => {
-        let coordinateX = Math.floor(
-            (mousePosition.x - chessBoard.offsetLeft) / squareSize
-        );
-        let coordinateY = Math.abs(
-            Math.ceil(
-                (mousePosition.y - chessBoard.offsetTop - boardSize) /
-                    squareSize
-            )
-        );
-
-        setActivePieceCoordinate({
-            x: coordinateX,
-            y: coordinateY
-        });
+    ): void => {
+        const { x, y } = getBoardCoordinateUnderMouse(e, chessBoard);
+        setActivePieceCoordinate({ x, y });
     };
 
-    const movePiece = (e: React.MouseEvent) => {
+    const movePiece = (e: React.MouseEvent): void => {
         const chessBoard = chessBoardEl.current;
 
         if (activePiece && chessBoard) {
@@ -98,30 +75,72 @@ const Game: React.FunctionComponent<Props> = () => {
         }
     };
 
-    const dropPiece = (e: React.MouseEvent) => {
+    const dropPiece = (e: React.MouseEvent): void => {
         const chessBoard = chessBoardEl.current;
         if (activePiece && activePieceCoordinate && chessBoard) {
-            let col = Math.floor(
-                (e.clientX - chessBoard.offsetLeft) / squareSize
-            );
-            let row = Math.abs(
-                Math.ceil(
-                    (e.clientY - chessBoard.offsetTop - boardSize) / squareSize
-                )
-            );
-
             const squaresCopy = squares.slice();
 
-            squaresCopy[row][col] =
+            const sourceSquare =
                 squaresCopy[activePieceCoordinate.y][activePieceCoordinate.x];
-            squaresCopy[activePieceCoordinate.y][activePieceCoordinate.x] =
-                null;
 
-            setSquares(squaresCopy);
+            const destination = getBoardCoordinateUnderMouse(e, chessBoard);
+            const destinationSquare = squaresCopy[destination.y][destination.x];
+
+            const isMovePossible: boolean = sourceSquare!.isMovePossible(
+                activePieceCoordinate,
+                destination,
+                destinationSquare
+            );
+            const srcToDestPath: Array<Coordinate> =
+                sourceSquare!.getSrcToDestPath(
+                    activePieceCoordinate,
+                    destination
+                );
+            const isLegal = isLegalMove(srcToDestPath);
+
+            if (isMovePossible && isLegal) {
+                squaresCopy[destination.y][destination.x] =
+                    squaresCopy[activePieceCoordinate.y][
+                        activePieceCoordinate.x
+                    ];
+                squaresCopy[activePieceCoordinate.y][activePieceCoordinate.x] =
+                    null;
+
+                setSquares(squaresCopy);
+            } else {
+                activePiece.style.position = 'relative';
+                activePiece.style.top = '0px';
+                activePiece.style.left = '0px';
+            }
 
             setActivePieceCoordinate(null);
             setActivePiece(null);
         }
+    };
+
+    const getBoardCoordinateUnderMouse = (
+        e: React.MouseEvent,
+        board: HTMLDivElement
+    ): Coordinate => {
+        const col = Math.floor((e.clientX - board.offsetLeft) / squareSize);
+        const row = Math.abs(
+            Math.ceil((e.clientY - board.offsetTop - boardSize) / squareSize)
+        );
+
+        return {
+            x: col,
+            y: row
+        };
+    };
+
+    const isLegalMove = (srcToDestPath: Array<Coordinate>): boolean => {
+        for (let coordinate of srcToDestPath) {
+            if (squares[coordinate.y][coordinate.x] !== null) {
+                return false;
+            }
+        }
+
+        return true;
     };
 
     return (

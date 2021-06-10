@@ -1,4 +1,4 @@
-import Piece, { PieceColor } from './Piece';
+import Piece, { PieceColor, Coordinate } from './Piece';
 
 export default class Pawn extends Piece {
     constructor(player: number, color: PieceColor) {
@@ -6,11 +6,42 @@ export default class Pawn extends Piece {
         this.icon = `assets/images/pawn_${this.colorSymbol}.png`;
     }
 
-    isMovePossible(src: number, dest: number) {
-        return true;
+    isMovePossible(
+        src: Coordinate,
+        dest: Coordinate,
+        destinationSquare: Piece | null
+    ): boolean {
+        // TODO: en passant
+        const direction = this.color === PieceColor.WHITE ? 1 : -1;
+        const startingRow = this.color === PieceColor.WHITE ? 1 : 6;
+        if (src.x === dest.x) {
+            if (
+                !!!destinationSquare &&
+                (src.y + direction === dest.y ||
+                    (src.y === startingRow && src.y + direction * 2 === dest.y))
+            ) {
+                return true;
+            }
+        } else if (
+            src.y + direction === dest.y &&
+            (src.x - direction === dest.x || src.x + direction === dest.x)
+        ) {
+            // capture
+            return (
+                !!destinationSquare && destinationSquare.color !== this.color
+            );
+        }
+
+        return false;
     }
 
-    getSrcToDestPath(src: number, dest: number) {
+    getSrcToDestPath(src: Coordinate, dest: Coordinate): Array<Coordinate> {
+        const direction = this.color === PieceColor.WHITE ? 1 : -1;
+        if (src.x === dest.x) {
+            if (src.y + direction * 2 === dest.y) {
+                return [{ x: src.x, y: src.y + direction }];
+            }
+        }
         return [];
     }
 }

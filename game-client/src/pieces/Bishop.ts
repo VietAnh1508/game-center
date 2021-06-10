@@ -1,4 +1,4 @@
-import Piece, { PieceColor } from './Piece';
+import Piece, { PieceColor, Coordinate } from './Piece';
 
 export default class Bishop extends Piece {
     constructor(player: number, color: PieceColor) {
@@ -6,11 +6,11 @@ export default class Bishop extends Piece {
         this.icon = `assets/images/bishop_${this.colorSymbol}.png`;
     }
 
-    isMovePossible(src: number, dest: number) {
+    isMovePossible(src: Coordinate, dest: Coordinate): boolean {
         return true;
     }
 
-    getSrcToDestPath(src: number, dest: number) {
+    getSrcToDestPath(src: Coordinate, dest: Coordinate): Array<Coordinate> {
         return [];
     }
 }
