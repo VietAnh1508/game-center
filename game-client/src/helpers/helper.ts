@@ -82,3 +82,82 @@ const createPiece = (
 export const isSamePosition = (p1: Coordinate, p2: Coordinate): boolean => {
     return p1.x === p2.x && p1.y === p2.y;
 };
+
+export const getPointsBetween2PointsOnStraightLine = (
+    p1: Coordinate,
+    p2: Coordinate
+): Array<Coordinate> => {
+    let path: Array<Coordinate> = [];
+
+    if (p1.x === p2.x) {
+        let startRow = Math.min(p1.y, p2.y),
+            endRow = Math.max(p1.y, p2.y);
+
+        for (let row = startRow + 1; row < endRow; row++) {
+            path.push({
+                x: p1.x,
+                y: row
+            });
+        }
+    } else if (p1.y === p2.y) {
+        let startCol = Math.min(p1.x, p2.x),
+            endCol = Math.max(p1.x, p2.x);
+
+        for (let col = startCol + 1; col < endCol; col++) {
+            path.push({
+                x: col,
+                y: p1.y
+            });
+        }
+    }
+
+    return path;
+};
+
+export const getPointsBetween2PointsOnDiagonal = (
+    p1: Coordinate,
+    p2: Coordinate
+): Array<Coordinate> => {
+    let path: Array<Coordinate> = [];
+
+    let startX = -1,
+        endX = -1,
+        startY = -1,
+        endY = -1;
+
+    if (p1.x < p2.x) {
+        startX = p1.x;
+        endX = p2.x;
+    } else {
+        startX = p2.x;
+        endX = p1.x;
+    }
+
+    if (p1.y < p2.y) {
+        startY = p1.y;
+        endY = p2.y;
+    } else {
+        startY = p2.y;
+        endY = p1.y;
+    }
+
+    let xCoordinates: Array<number> = [];
+    for (let i = 1; i < endY - startY; i++) {
+        xCoordinates.push(startX + i);
+    }
+
+    // the yAxis is upside down
+    let yCoordinates: Array<number> = [];
+    for (let i = endY - startY - 1; i > 0; i--) {
+        yCoordinates.push(startY + i);
+    }
+
+    for (let i = 0, len = xCoordinates.length; i < len; i++) {
+        path.push({
+            x: xCoordinates[i],
+            y: yCoordinates[i]
+        });
+    }
+
+    return path;
+};
