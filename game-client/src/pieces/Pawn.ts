@@ -9,16 +9,15 @@ export default class Pawn extends Piece {
     isMovePossible(
         src: Coordinate,
         dest: Coordinate,
-        destinationSquare: Piece | null
+        isDestEnemyOccupied: boolean
     ): boolean {
         // TODO: en passant
         const direction = this.color === PieceColor.WHITE ? 1 : -1;
         const startingRow = this.color === PieceColor.WHITE ? 1 : 6;
         if (src.x === dest.x) {
             if (
-                !!!destinationSquare &&
-                (src.y + direction === dest.y ||
-                    (src.y === startingRow && src.y + direction * 2 === dest.y))
+                src.y + direction === dest.y ||
+                (src.y === startingRow && src.y + direction * 2 === dest.y)
             ) {
                 return true;
             }
@@ -27,9 +26,7 @@ export default class Pawn extends Piece {
             (src.x - direction === dest.x || src.x + direction === dest.x)
         ) {
             // capture
-            return (
-                !!destinationSquare && destinationSquare.color !== this.color
-            );
+            return isDestEnemyOccupied;
         }
 
         return false;

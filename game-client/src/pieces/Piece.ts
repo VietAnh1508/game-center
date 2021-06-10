@@ -24,7 +24,7 @@ export interface PieceInterface {
     isMovePossible(
         src: Coordinate,
         dest: Coordinate,
-        destinationSquare: Piece | null
+        isDestEnemyOccupied: boolean
     ): boolean;
     getSrcToDestPath(src: Coordinate, dest: Coordinate): Array<Coordinate>;
 }
@@ -45,7 +45,7 @@ export default abstract class Piece implements PieceInterface {
     abstract isMovePossible(
         src: Coordinate,
         dest: Coordinate,
-        destinationSquare: Piece | null
+        isDestEnemyOccupied: boolean
     ): boolean;
     abstract getSrcToDestPath(
         src: Coordinate,

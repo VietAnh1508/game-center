@@ -89,7 +89,7 @@ const Game: React.FunctionComponent<Props> = () => {
             const isMovePossible: boolean = sourceSquare!.isMovePossible(
                 activePieceCoordinate,
                 destination,
-                destinationSquare
+                !!destinationSquare
             );
             const srcToDestPath: Array<Coordinate> =
                 sourceSquare!.getSrcToDestPath(
