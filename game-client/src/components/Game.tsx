@@ -21,6 +21,10 @@ const Game: React.FunctionComponent<Props> = () => {
     const [activePieceCoordinate, setActivePieceCoordinate] =
         useState<Coordinate | null>(null);
     const [activePiece, setActivePiece] = useState<HTMLElement | null>(null);
+    const [highlightedSquares, setHighlightedSquares] = useState<
+        Array<Coordinate>
+    >([]);
+
     let chessBoardEl = useRef<HTMLDivElement>(null);
 
     const grabPiece = (e: React.MouseEvent): void => {
@@ -44,6 +48,12 @@ const Game: React.FunctionComponent<Props> = () => {
     ): void => {
         const { x, y } = getBoardCoordinateUnderMouse(e, chessBoard);
         setActivePieceCoordinate({ x, y });
+
+        if (highlightedSquares.length !== 0) {
+            setHighlightedSquares([]);
+        }
+
+        setHighlightedSquares([{ x, y }]);
     };
 
     const movePiece = (e: React.MouseEvent): void => {
@@ -110,6 +120,10 @@ const Game: React.FunctionComponent<Props> = () => {
                     null;
 
                 setSquares(squaresCopy);
+
+                let highlighted = highlightedSquares;
+                highlighted.push({ x: destination.x, y: destination.y });
+                setHighlightedSquares(highlighted);
             } else {
                 activePiece.style.position = 'relative';
                 activePiece.style.top = '0px';
@@ -153,6 +167,7 @@ const Game: React.FunctionComponent<Props> = () => {
                 boardSize={boardSize}
                 squareSize={squareSize}
                 squares={squares}
+                highlightedSquares={highlightedSquares}
                 onMouseDown={(e) => grabPiece(e)}
                 onMouseMove={(e) => movePiece(e)}
                 onMouseUp={(e) => dropPiece(e)}

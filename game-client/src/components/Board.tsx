@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Square from './Square';
-import Piece from '../pieces/Piece';
+import Piece, { Coordinate } from '../pieces/Piece';
 
 interface ChessBoardProps {
     boardSize: number;
@@ -21,6 +21,7 @@ interface Props {
     boardSize: number;
     squareSize: number;
     squares: (Piece | null)[][];
+    highlightedSquares: Array<Coordinate>;
     onMouseDown: (e: React.MouseEvent) => void;
     onMouseMove: (e: React.MouseEvent) => void;
     onMouseUp: (e: React.MouseEvent) => void;
@@ -36,11 +37,20 @@ const Board = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
             const squareColor = (i + j) % 2 === 0 ? 'dark' : 'light',
                 piece = props.squares[i][j];
 
+            let isHighlight = false;
+            for (let position of props.highlightedSquares) {
+                if (position.x === j && position.y === i) {
+                    isHighlight = true;
+                    break;
+                }
+            }
+
             squares.push(
                 <Square
                     key={`${i}${j}`}
                     size={SQUARE_SIZE}
                     color={squareColor}
+                    highlight={isHighlight}
                     piece={piece}
                 />
             );

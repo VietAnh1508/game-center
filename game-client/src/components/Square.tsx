@@ -5,11 +5,18 @@ import Piece from '../pieces/Piece';
 interface StyleSquareProps {
     size: number;
     color: string;
+    highlight: boolean;
 }
 
 const StyledSquare = styled.div<StyleSquareProps>`
     width: ${(p) => p.size}px;
-    background-color: ${(p) => (p.color === 'dark' ? '#769656' : '#eeeed2')};
+    background-color: ${(p) => {
+        if (p.color === 'dark') {
+            return p.highlight ? '#bbca2b' : '#769656';
+        } else {
+            return p.highlight ? '#f6f668' : '#eeeed2';
+        }
+    }};
     display: grid;
     place-content: center;
 `;
@@ -38,12 +45,17 @@ const ChessPiece = styled.div<StyledPieceProps>`
 interface Props {
     size: number;
     color: string;
+    highlight: boolean;
     piece: Piece | null;
 }
 
 const Square: React.FunctionComponent<Props> = (props) => {
     return (
-        <StyledSquare size={props.size} color={props.color}>
+        <StyledSquare
+            size={props.size}
+            color={props.color}
+            highlight={props.highlight}
+        >
             {props.piece && (
                 <ChessPiece
                     size={props.size}
