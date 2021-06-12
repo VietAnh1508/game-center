@@ -75,7 +75,11 @@ export default class Pawn extends Piece {
             };
         }
 
-        if (move2 && squares[move2.y][move2.x] === null) {
+        if (
+            move2 &&
+            squares[move1.y][move1.x] === null &&
+            squares[move2.y][move2.x] === null
+        ) {
             moves.push(move2);
         }
 
