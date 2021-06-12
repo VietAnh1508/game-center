@@ -115,6 +115,10 @@ const Game: React.FunctionComponent<Props> = () => {
             const sourceSquare =
                 squaresCopy[activePieceCoordinate.y][activePieceCoordinate.x];
 
+            if (sourceSquare?.color !== turn) {
+                return;
+            }
+
             const destination = getBoardCoordinateUnderMouse(e, chessBoard);
             const destinationSquare = squaresCopy[destination.y][destination.x];
 
