@@ -34,7 +34,7 @@ const Board = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
 
     for (let i = 7; i >= 0; i--) {
         for (let j = 0; j < 8; j++) {
-            const squareColor = (i + j) % 2 === 0 ? 'dark' : 'light',
+            const isShade = (i + j) % 2 === 0,
                 piece = props.squares[i][j];
 
             let isHighlight = false;
@@ -49,8 +49,8 @@ const Board = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
                 <Square
                     key={`${i}${j}`}
                     size={SQUARE_SIZE}
-                    color={squareColor}
-                    highlight={isHighlight}
+                    isShade={isShade}
+                    isHighlight={isHighlight}
                     piece={piece}
                 />
             );
