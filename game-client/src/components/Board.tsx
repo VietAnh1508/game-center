@@ -22,6 +22,7 @@ interface Props {
     squareSize: number;
     squares: (Piece | null)[][];
     highlightedSquares: Array<Coordinate>;
+    hintSquares: Array<Coordinate>;
     onMouseDown: (e: React.MouseEvent) => void;
     onMouseMove: (e: React.MouseEvent) => void;
     onMouseUp: (e: React.MouseEvent) => void;
@@ -45,12 +46,21 @@ const Board = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
                 }
             }
 
+            let isHint = false;
+            for (let position of props.hintSquares) {
+                if (position.x === j && position.y === i) {
+                    isHint = true;
+                    break;
+                }
+            }
+
             squares.push(
                 <Square
                     key={`${i}${j}`}
                     size={SQUARE_SIZE}
                     isShade={isShade}
                     isHighlight={isHighlight}
+                    isHint={isHint}
                     piece={piece}
                 />
             );

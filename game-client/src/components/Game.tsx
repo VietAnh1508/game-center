@@ -26,6 +26,7 @@ const Game: React.FunctionComponent<Props> = () => {
     >([]);
     const [turn, setTurn] = useState<PieceColor>(PieceColor.WHITE);
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
+    const [hintSquares, setHintSquares] = useState<Array<Coordinate>>([]);
 
     let chessBoardEl = useRef<HTMLDivElement>(null);
 
@@ -62,6 +63,8 @@ const Game: React.FunctionComponent<Props> = () => {
             element.style.top = `${e.clientY - squareSize / 2}px`;
 
             setActivePiece(element);
+
+            setHintSquares(selectedPiece!.getPossibleMoves({ x, y }));
         }
     };
 
@@ -149,6 +152,8 @@ const Game: React.FunctionComponent<Props> = () => {
                         ? PieceColor.BLACK
                         : PieceColor.WHITE
                 );
+
+                setHintSquares([]);
             } else {
                 activePiece.style.position = 'relative';
                 activePiece.style.top = '0px';
@@ -192,6 +197,7 @@ const Game: React.FunctionComponent<Props> = () => {
                 squareSize={squareSize}
                 squares={squares}
                 highlightedSquares={highlightedSquares}
+                hintSquares={hintSquares}
                 onMouseDown={(e) => grabPiece(e)}
                 onMouseMove={(e) => movePiece(e)}
                 onMouseUp={(e) => dropPiece(e)}

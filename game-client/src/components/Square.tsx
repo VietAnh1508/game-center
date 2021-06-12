@@ -41,10 +41,18 @@ const ChessPiece = styled.div<StyledPieceProps>`
     }
 `;
 
+const Hint = styled.div`
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.1);
+    width: 25px; // TODO: dynamic value
+    height: 25px;
+`;
+
 interface Props {
     size: number;
     isShade: boolean;
     isHighlight: boolean;
+    isHint: boolean;
     piece: Piece | null;
 }
 
@@ -62,6 +70,7 @@ const Square: React.FunctionComponent<Props> = (props) => {
                     className='chess-piece'
                 />
             )}
+            {props.isHint && <Hint />}
         </StyledSquare>
     );
 };
