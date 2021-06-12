@@ -25,19 +25,28 @@ const Game: React.FunctionComponent<Props> = () => {
         Array<Coordinate>
     >([]);
     const [turn, setTurn] = useState<PieceColor>(PieceColor.WHITE);
+    const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
 
     let chessBoardEl = useRef<HTMLDivElement>(null);
 
     const grabPiece = (e: React.MouseEvent): void => {
+        setIsMouseDown(true);
+
         const element = e.target as HTMLElement;
         const chessBoard = chessBoardEl.current;
+        if (!chessBoard) {
+            return;
+        }
 
-        if (element.classList.contains('chess-piece') && chessBoard) {
+        if (element.classList.contains('chess-piece')) {
             const { x, y } = getBoardCoordinateUnderMouse(e, chessBoard);
 
             const selectedPiece = squares[y][x];
             if (selectedPiece!.color !== turn) {
                 return;
+            } else {
+                setActivePieceCoordinate(null);
+                setActivePiece(null);
             }
 
             setActivePieceCoordinate({ x, y });
@@ -58,8 +67,11 @@ const Game: React.FunctionComponent<Props> = () => {
 
     const movePiece = (e: React.MouseEvent): void => {
         const chessBoard = chessBoardEl.current;
+        if (!chessBoard) {
+            return;
+        }
 
-        if (activePiece && chessBoard) {
+        if (isMouseDown && activePiece) {
             const minX = chessBoard.offsetLeft,
                 maxX = minX + chessBoard.clientWidth - squareSize,
                 minY = chessBoard.offsetTop,
@@ -87,8 +99,14 @@ const Game: React.FunctionComponent<Props> = () => {
     };
 
     const dropPiece = (e: React.MouseEvent): void => {
+        setIsMouseDown(false);
+
         const chessBoard = chessBoardEl.current;
-        if (activePiece && activePieceCoordinate && chessBoard) {
+        if (!chessBoard) {
+            return;
+        }
+
+        if (activePiece && activePieceCoordinate) {
             const squaresCopy = squares.slice();
 
             const sourceSquare =
@@ -136,9 +154,6 @@ const Game: React.FunctionComponent<Props> = () => {
                 activePiece.style.top = '0px';
                 activePiece.style.left = '0px';
             }
-
-            setActivePieceCoordinate(null);
-            setActivePiece(null);
         }
     };
 
