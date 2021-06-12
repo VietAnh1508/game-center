@@ -127,6 +127,7 @@ const Game: React.FunctionComponent<Props> = () => {
                 destination,
                 !!destinationSquare
             );
+
             const srcToDestPath: Array<Coordinate> =
                 sourceSquare!.getSrcToDestPath(
                     activePieceCoordinate,

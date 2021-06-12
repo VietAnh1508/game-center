@@ -16,8 +16,9 @@ export default class Pawn extends Piece {
         const startingRow = this.color === PieceColor.WHITE ? 1 : 6;
         if (src.x === dest.x) {
             if (
-                src.y + direction === dest.y ||
-                (src.y === startingRow && src.y + direction * 2 === dest.y)
+                !isDestEnemyOccupied &&
+                (src.y + direction === dest.y ||
+                    (src.y === startingRow && src.y + direction * 2 === dest.y))
             ) {
                 return true;
             }
