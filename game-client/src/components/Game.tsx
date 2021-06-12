@@ -64,7 +64,7 @@ const Game: React.FunctionComponent<Props> = () => {
 
             setActivePiece(element);
 
-            setHintSquares(selectedPiece!.getPossibleMoves({ x, y }));
+            setHintSquares(selectedPiece!.getPossibleMoves({ x, y }, squares));
         }
     };
 

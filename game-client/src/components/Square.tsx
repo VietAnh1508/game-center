@@ -48,6 +48,18 @@ const Hint = styled.div`
     height: 25px;
 `;
 
+interface CaptureHintProps {
+    size: number;
+}
+
+const CaptureHint = styled.div<CaptureHintProps>`
+    border: 5px solid rgba(0, 0, 0, 0.1);
+    width: ${(p) => p.size}px;
+    height: ${(p) => p.size}px;
+    border-radius: 50%;
+    position: absolute;
+`;
+
 interface Props {
     size: number;
     isShade: boolean;
@@ -70,7 +82,8 @@ const Square: React.FunctionComponent<Props> = (props) => {
                     className='chess-piece'
                 />
             )}
-            {props.isHint && <Hint />}
+            {props.isHint &&
+                (props.piece ? <CaptureHint size={props.size} /> : <Hint />)}
         </StyledSquare>
     );
 };

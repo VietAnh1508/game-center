@@ -29,7 +29,10 @@ export interface PieceInterface {
 
     getSrcToDestPath(src: Coordinate, dest: Coordinate): Array<Coordinate>;
 
-    getPossibleMoves(curPos: Coordinate): Array<Coordinate>;
+    getPossibleMoves(
+        curPos: Coordinate,
+        squares: Array<Array<Piece | null>>
+    ): Array<Coordinate>;
 }
 
 export default abstract class Piece implements PieceInterface {
@@ -56,5 +59,8 @@ export default abstract class Piece implements PieceInterface {
         dest: Coordinate
     ): Array<Coordinate>;
 
-    abstract getPossibleMoves(curPos: Coordinate): Array<Coordinate>;
+    abstract getPossibleMoves(
+        curPos: Coordinate,
+        squares: Array<Array<Piece | null>>
+    ): Array<Coordinate>;
 }

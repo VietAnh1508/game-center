@@ -42,27 +42,64 @@ export default class Pawn extends Piece {
         return [];
     }
 
-    getPossibleMoves(curPos: Coordinate): Array<Coordinate> {
+    getPossibleMoves(
+        curPos: Coordinate,
+        squares: Array<Array<Piece | null>>
+    ): Array<Coordinate> {
         const direction = this.color === PieceColor.WHITE ? 1 : -1;
-        let moves = [
-            {
-                x: curPos.x,
-                y: curPos.y + direction
-            }
-        ];
+        let moves = [];
+
+        const move1 = {
+            x: curPos.x,
+            y: curPos.y + direction
+        };
+
+        if (squares[move1.y][move1.x] === null) {
+            moves.push(move1);
+        }
+
+        let move2;
 
         if (this.color === PieceColor.WHITE && curPos.y === 1) {
-            moves.push({
+            move2 = {
                 x: curPos.x,
                 y: curPos.y + 2
-            });
+            };
         }
 
         if (this.color === PieceColor.BLACK && curPos.y === 6) {
-            moves.push({
+            move2 = {
                 x: curPos.x,
                 y: curPos.y - 2
-            });
+            };
+        }
+
+        if (move2 && squares[move2.y][move2.x] === null) {
+            moves.push(move2);
+        }
+
+        const takeLeftMove = {
+            x: this.color === PieceColor.WHITE ? curPos.x - 1 : curPos.x + 1,
+            y: this.color === PieceColor.WHITE ? curPos.y + 1 : curPos.y - 1
+        };
+
+        if (
+            squares[takeLeftMove.y][takeLeftMove.x] &&
+            squares[takeLeftMove.y][takeLeftMove.x]!.color !== this.color
+        ) {
+            moves.push(takeLeftMove);
+        }
+
+        const takeRightMove = {
+            x: this.color === PieceColor.WHITE ? curPos.x + 1 : curPos.x - 1,
+            y: this.color === PieceColor.WHITE ? curPos.y + 1 : curPos.y - 1
+        };
+
+        if (
+            squares[takeRightMove.y][takeRightMove.x] &&
+            squares[takeRightMove.y][takeRightMove.x]!.color !== this.color
+        ) {
+            moves.push(takeRightMove);
         }
 
         return moves;
