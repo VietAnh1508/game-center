@@ -43,6 +43,28 @@ export default class Pawn extends Piece {
     }
 
     getPossibleMoves(curPos: Coordinate): Array<Coordinate> {
-        return [];
+        const direction = this.color === PieceColor.WHITE ? 1 : -1;
+        let moves = [
+            {
+                x: curPos.x,
+                y: curPos.y + direction
+            }
+        ];
+
+        if (this.color === PieceColor.WHITE && curPos.y === 1) {
+            moves.push({
+                x: curPos.x,
+                y: curPos.y + 2
+            });
+        }
+
+        if (this.color === PieceColor.BLACK && curPos.y === 6) {
+            moves.push({
+                x: curPos.x,
+                y: curPos.y - 2
+            });
+        }
+
+        return moves;
     }
 }
