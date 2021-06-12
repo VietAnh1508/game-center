@@ -24,7 +24,56 @@ export default class King extends Piece {
         return [];
     }
 
-    getPossibleMoves(curPos: Coordinate): Array<Coordinate> {
-        return [];
+    getPossibleMoves(
+        curPos: Coordinate,
+        squares: Array<Array<Piece | null>>
+    ): Array<Coordinate> {
+        let moves = [
+            {
+                x: curPos.x - 1,
+                y: curPos.y + 1
+            },
+            {
+                x: curPos.x,
+                y: curPos.y + 1
+            },
+            {
+                x: curPos.x + 1,
+                y: curPos.y + 1
+            },
+            {
+                x: curPos.x - 1,
+                y: curPos.y
+            },
+            {
+                x: curPos.x + 1,
+                y: curPos.y
+            },
+            {
+                x: curPos.x - 1,
+                y: curPos.y - 1
+            },
+            {
+                x: curPos.x,
+                y: curPos.y - 1
+            },
+            {
+                x: curPos.x + 1,
+                y: curPos.y - 1
+            }
+        ];
+
+        return moves.filter((pos) => {
+            // remove positions outside of the board
+            if (!squares[pos.y]) {
+                return false;
+            }
+
+            const piece = squares[pos.y][pos.x];
+            return (
+                piece !== undefined &&
+                (piece === null || piece.color !== this.color)
+            );
+        });
     }
 }
