@@ -23,4 +23,8 @@ export default class King extends Piece {
     getSrcToDestPath(src: Coordinate, dest: Coordinate) {
         return [];
     }
+
+    getPossibleMoves(curPos: Coordinate): Array<Coordinate> {
+        return [];
+    }
 }

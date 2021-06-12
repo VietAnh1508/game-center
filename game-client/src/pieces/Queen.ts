@@ -28,4 +28,8 @@ export default class Queen extends Piece {
 
         return [...straightLinePath, ...diagonalPath];
     }
+
+    getPossibleMoves(curPos: Coordinate): Array<Coordinate> {
+        return [];
+    }
 }

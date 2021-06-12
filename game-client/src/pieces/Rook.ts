@@ -14,4 +14,8 @@ export default class Rook extends Piece {
     getSrcToDestPath(src: Coordinate, dest: Coordinate): Array<Coordinate> {
         return [...getPointsBetween2PointsOnStraightLine(src, dest)];
     }
+
+    getPossibleMoves(curPos: Coordinate): Array<Coordinate> {
+        return [];
+    }
 }

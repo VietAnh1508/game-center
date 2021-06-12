@@ -26,7 +26,10 @@ export interface PieceInterface {
         dest: Coordinate,
         isDestEnemyOccupied: boolean
     ): boolean;
+
     getSrcToDestPath(src: Coordinate, dest: Coordinate): Array<Coordinate>;
+
+    getPossibleMoves(curPos: Coordinate): Array<Coordinate>;
 }
 
 export default abstract class Piece implements PieceInterface {
@@ -47,8 +50,11 @@ export default abstract class Piece implements PieceInterface {
         dest: Coordinate,
         isDestEnemyOccupied: boolean
     ): boolean;
+
     abstract getSrcToDestPath(
         src: Coordinate,
         dest: Coordinate
     ): Array<Coordinate>;
+
+    abstract getPossibleMoves(curPos: Coordinate): Array<Coordinate>;
 }

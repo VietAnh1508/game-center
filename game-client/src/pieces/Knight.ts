@@ -45,4 +45,8 @@ export default class Knight extends Piece {
         // knight can jump over other pieces, so no need to validate the path
         return [];
     }
+
+    getPossibleMoves(curPos: Coordinate): Array<Coordinate> {
+        return [];
+    }
 }

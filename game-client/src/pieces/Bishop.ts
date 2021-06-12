@@ -14,4 +14,8 @@ export default class Bishop extends Piece {
     getSrcToDestPath(src: Coordinate, dest: Coordinate): Array<Coordinate> {
         return [...getPointsBetween2PointsOnDiagonal(src, dest)];
     }
+
+    getPossibleMoves(curPos: Coordinate): Array<Coordinate> {
+        return [];
+    }
 }

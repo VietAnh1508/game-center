@@ -41,4 +41,8 @@ export default class Pawn extends Piece {
         }
         return [];
     }
+
+    getPossibleMoves(curPos: Coordinate): Array<Coordinate> {
+        return [];
+    }
 }
