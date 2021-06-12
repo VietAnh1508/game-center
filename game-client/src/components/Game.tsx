@@ -40,7 +40,13 @@ const Game: React.FunctionComponent<Props> = () => {
                 return;
             }
 
-            updateSelectedPieceCoordinate({ x, y });
+            setActivePieceCoordinate({ x, y });
+
+            if (highlightedSquares.length !== 0) {
+                setHighlightedSquares([]);
+            }
+
+            setHighlightedSquares([{ x, y }]);
 
             element.style.position = 'absolute';
             element.style.left = `${e.clientX - squareSize / 2}px`;
@@ -48,16 +54,6 @@ const Game: React.FunctionComponent<Props> = () => {
 
             setActivePiece(element);
         }
-    };
-
-    const updateSelectedPieceCoordinate = ({ x, y }: Coordinate): void => {
-        setActivePieceCoordinate({ x, y });
-
-        if (highlightedSquares.length !== 0) {
-            setHighlightedSquares([]);
-        }
-
-        setHighlightedSquares([{ x, y }]);
     };
 
     const movePiece = (e: React.MouseEvent): void => {
@@ -71,6 +67,7 @@ const Game: React.FunctionComponent<Props> = () => {
                 x = e.clientX,
                 y = e.clientY;
 
+            // prevent dragging piece out of the board
             if (x < minX) {
                 activePiece.style.left = `${minX}px`;
             } else if (x > maxX) {
@@ -149,10 +146,12 @@ const Game: React.FunctionComponent<Props> = () => {
         e: React.MouseEvent,
         board: HTMLDivElement
     ): Coordinate => {
-        const col = Math.floor((e.clientX - board.offsetLeft) / squareSize);
-        const row = Math.abs(
-            Math.ceil((e.clientY - board.offsetTop - boardSize) / squareSize)
-        );
+        const col = Math.floor((e.clientX - board.offsetLeft) / squareSize),
+            row = Math.abs(
+                Math.ceil(
+                    (e.clientY - board.offsetTop - boardSize) / squareSize
+                )
+            );
 
         return {
             x: col,

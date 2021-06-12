@@ -13,9 +13,8 @@ const StyledSquare = styled.div<StyleSquareProps>`
     background-color: ${(p) => {
         if (p.isShade) {
             return p.isHighlight ? '#bbca2b' : '#769656';
-        } else {
-            return p.isHighlight ? '#f6f668' : '#eeeed2';
         }
+        return p.isHighlight ? '#f6f668' : '#eeeed2';
     }};
     display: grid;
     place-content: center;
