@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { initialiseChessBoard } from '../helpers/helper';
-import Piece, { Coordinate } from '../pieces/Piece';
+import Piece, { Coordinate, PieceColor } from '../pieces/Piece';
 import Board from './Board';
 
 const Container = styled.div`
@@ -24,6 +24,7 @@ const Game: React.FunctionComponent<Props> = () => {
     const [highlightedSquares, setHighlightedSquares] = useState<
         Array<Coordinate>
     >([]);
+    const [turn, setTurn] = useState<PieceColor>(PieceColor.WHITE);
 
     let chessBoardEl = useRef<HTMLDivElement>(null);
 
@@ -32,7 +33,14 @@ const Game: React.FunctionComponent<Props> = () => {
         const chessBoard = chessBoardEl.current;
 
         if (element.classList.contains('chess-piece') && chessBoard) {
-            updateSelectedPieceCoordinate(e, chessBoard);
+            const { x, y } = getBoardCoordinateUnderMouse(e, chessBoard);
+
+            const selectedPiece = squares[y][x];
+            if (selectedPiece!.color !== turn) {
+                return;
+            }
+
+            updateSelectedPieceCoordinate({ x, y });
 
             element.style.position = 'absolute';
             element.style.left = `${e.clientX - squareSize / 2}px`;
@@ -42,11 +50,7 @@ const Game: React.FunctionComponent<Props> = () => {
         }
     };
 
-    const updateSelectedPieceCoordinate = (
-        e: React.MouseEvent,
-        chessBoard: HTMLDivElement
-    ): void => {
-        const { x, y } = getBoardCoordinateUnderMouse(e, chessBoard);
+    const updateSelectedPieceCoordinate = ({ x, y }: Coordinate): void => {
         setActivePieceCoordinate({ x, y });
 
         if (highlightedSquares.length !== 0) {
@@ -124,6 +128,12 @@ const Game: React.FunctionComponent<Props> = () => {
                 let highlighted = highlightedSquares;
                 highlighted.push({ x: destination.x, y: destination.y });
                 setHighlightedSquares(highlighted);
+
+                setTurn(
+                    turn === PieceColor.WHITE
+                        ? PieceColor.BLACK
+                        : PieceColor.WHITE
+                );
             } else {
                 activePiece.style.position = 'relative';
                 activePiece.style.top = '0px';
