@@ -15,12 +15,21 @@ export default class Queen extends Piece {
     }
 
     getSrcToDestPath(src: Coordinate, dest: Coordinate): Array<Coordinate> {
-        let straightLinePath: Array<Coordinate> =
-            this.getPointsBetween2PointsOnColAndRow(src, dest);
-        let diagonalPath: Array<Coordinate> =
-            this.getPointsBetween2PointsOnDiagonal(src, dest);
+        let colPath: Array<Coordinate> = [],
+            rowPath: Array<Coordinate> = [],
+            diagonalPath: Array<Coordinate> = [];
 
-        return [...straightLinePath, ...diagonalPath];
+        if (src.x === dest.x) {
+            colPath.push(...this.getPointsBetween2PointsOnCol(src, dest));
+        } else if (src.y === dest.y) {
+            rowPath.push(...this.getPointsBetween2PointsOnRow(src, dest));
+        } else {
+            diagonalPath.push(
+                ...this.getPointsBetween2PointsOnDiagonal(src, dest)
+            );
+        }
+
+        return [...colPath, ...rowPath, ...diagonalPath];
     }
 
     getPossibleMoves(
