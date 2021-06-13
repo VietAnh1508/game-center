@@ -11,7 +11,15 @@ export default class Rook extends Piece {
     }
 
     getSrcToDestPath(src: Coordinate, dest: Coordinate): Array<Coordinate> {
-        return this.getPointsBetween2PointsOnColAndRow(src, dest);
+        let path: Array<Coordinate> = [];
+
+        if (src.x === dest.x) {
+            path.push(...this.getPointsBetween2PointsOnCol(src, dest));
+        } else if (src.y === dest.y) {
+            path.push(...this.getPointsBetween2PointsOnRow(src, dest));
+        }
+
+        return path;
     }
 
     getPossibleMoves(

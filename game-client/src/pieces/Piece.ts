@@ -64,32 +64,37 @@ export default abstract class Piece implements PieceInterface {
         squares: Array<Array<Piece | null>>
     ): Array<Coordinate>;
 
-    getPointsBetween2PointsOnColAndRow(
+    getPointsBetween2PointsOnCol(
         p1: Coordinate,
         p2: Coordinate
     ): Array<Coordinate> {
-        let path: Array<Coordinate> = [];
+        let path = [];
+        let startRow = Math.min(p1.y, p2.y),
+            endRow = Math.max(p1.y, p2.y);
 
-        if (p1.x === p2.x) {
-            let startRow = Math.min(p1.y, p2.y),
-                endRow = Math.max(p1.y, p2.y);
+        for (let row = startRow + 1; row < endRow; row++) {
+            path.push({
+                x: p1.x,
+                y: row
+            });
+        }
 
-            for (let row = startRow + 1; row < endRow; row++) {
-                path.push({
-                    x: p1.x,
-                    y: row
-                });
-            }
-        } else if (p1.y === p2.y) {
-            let startCol = Math.min(p1.x, p2.x),
-                endCol = Math.max(p1.x, p2.x);
+        return path;
+    }
 
-            for (let col = startCol + 1; col < endCol; col++) {
-                path.push({
-                    x: col,
-                    y: p1.y
-                });
-            }
+    getPointsBetween2PointsOnRow(
+        p1: Coordinate,
+        p2: Coordinate
+    ): Array<Coordinate> {
+        let path = [];
+        let startCol = Math.min(p1.x, p2.x),
+            endCol = Math.max(p1.x, p2.x);
+
+        for (let col = startCol + 1; col < endCol; col++) {
+            path.push({
+                x: col,
+                y: p1.y
+            });
         }
 
         return path;
