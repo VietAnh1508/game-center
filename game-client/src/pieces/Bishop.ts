@@ -25,10 +25,11 @@ export default class Bishop extends Piece {
         let x = curPos.x - 1,
             y = curPos.y + 1;
         while (x >= 0 && y < 8 && squares[y][x]?.color !== this.color) {
-            moves.push({
-                x,
-                y
-            });
+            moves.push({ x, y });
+
+            if (this.meetFirstOpponent(squares[y][x])) {
+                break;
+            }
 
             x--;
             y++;
@@ -43,6 +44,10 @@ export default class Bishop extends Piece {
                 y
             });
 
+            if (this.meetFirstOpponent(squares[y][x])) {
+                break;
+            }
+
             x++;
             y++;
         }
@@ -55,6 +60,10 @@ export default class Bishop extends Piece {
                 x,
                 y
             });
+
+            if (this.meetFirstOpponent(squares[y][x])) {
+                break;
+            }
 
             x--;
             y--;
@@ -69,10 +78,18 @@ export default class Bishop extends Piece {
                 y
             });
 
+            if (this.meetFirstOpponent(squares[y][x])) {
+                break;
+            }
+
             x++;
             y--;
         }
 
         return moves;
+    }
+
+    meetFirstOpponent(piece: Piece | null): boolean {
+        return piece !== null && piece?.color !== this.color;
     }
 }
