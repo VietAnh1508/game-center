@@ -1,8 +1,4 @@
 import Piece, { PieceColor, Coordinate } from './Piece';
-import {
-    getPointsBetween2PointsOnStraightLine,
-    getPointsBetween2PointsOnDiagonal
-} from '../helpers/helper';
 
 export default class Queen extends Piece {
     constructor(player: number, color: PieceColor) {
@@ -20,11 +16,9 @@ export default class Queen extends Piece {
 
     getSrcToDestPath(src: Coordinate, dest: Coordinate): Array<Coordinate> {
         let straightLinePath: Array<Coordinate> =
-            getPointsBetween2PointsOnStraightLine(src, dest);
-        let diagonalPath: Array<Coordinate> = getPointsBetween2PointsOnDiagonal(
-            src,
-            dest
-        );
+            this.getPointsBetween2PointsOnColAndRow(src, dest);
+        let diagonalPath: Array<Coordinate> =
+            this.getPointsBetween2PointsOnDiagonal(src, dest);
 
         return [...straightLinePath, ...diagonalPath];
     }

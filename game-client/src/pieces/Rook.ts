@@ -1,5 +1,4 @@
 import Piece, { PieceColor, Coordinate } from './Piece';
-import { getPointsBetween2PointsOnStraightLine } from '../helpers/helper';
 
 export default class Rook extends Piece {
     constructor(player: number, color: PieceColor) {
@@ -12,7 +11,7 @@ export default class Rook extends Piece {
     }
 
     getSrcToDestPath(src: Coordinate, dest: Coordinate): Array<Coordinate> {
-        return [...getPointsBetween2PointsOnStraightLine(src, dest)];
+        return [...this.getPointsBetween2PointsOnColAndRow(src, dest)];
     }
 
     getPossibleMoves(

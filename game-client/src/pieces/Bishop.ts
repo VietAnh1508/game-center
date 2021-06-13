@@ -1,5 +1,4 @@
 import Piece, { PieceColor, Coordinate } from './Piece';
-import { getPointsBetween2PointsOnDiagonal } from '../helpers/helper';
 
 export default class Bishop extends Piece {
     constructor(player: number, color: PieceColor) {
@@ -12,7 +11,7 @@ export default class Bishop extends Piece {
     }
 
     getSrcToDestPath(src: Coordinate, dest: Coordinate): Array<Coordinate> {
-        return [...getPointsBetween2PointsOnDiagonal(src, dest)];
+        return [...this.getPointsBetween2PointsOnDiagonal(src, dest)];
     }
 
     getPossibleMoves(
