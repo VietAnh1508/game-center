@@ -11,80 +11,13 @@ export default class Bishop extends Piece {
     }
 
     getSrcToDestPath(src: Coordinate, dest: Coordinate): Array<Coordinate> {
-        return [...this.getPointsBetween2PointsOnDiagonal(src, dest)];
+        return this.getPointsBetween2PointsOnDiagonal(src, dest);
     }
 
     getPossibleMoves(
         curPos: Coordinate,
         squares: Array<Array<Piece | null>>
     ): Array<Coordinate> {
-        let moves = [];
-
-        // top left
-        let x = curPos.x - 1,
-            y = curPos.y + 1;
-        while (x >= 0 && y < 8 && squares[y][x]?.color !== this.color) {
-            moves.push({ x, y });
-
-            if (this.meetFirstOpponent(squares[y][x])) {
-                break;
-            }
-
-            x--;
-            y++;
-        }
-
-        // top right
-        x = curPos.x + 1;
-        y = curPos.y + 1;
-        while (x < 8 && y < 8 && squares[y][x]?.color !== this.color) {
-            moves.push({
-                x,
-                y
-            });
-
-            if (this.meetFirstOpponent(squares[y][x])) {
-                break;
-            }
-
-            x++;
-            y++;
-        }
-
-        // bottom left
-        x = curPos.x - 1;
-        y = curPos.y - 1;
-        while (x >= 0 && y >= 0 && squares[y][x]?.color !== this.color) {
-            moves.push({
-                x,
-                y
-            });
-
-            if (this.meetFirstOpponent(squares[y][x])) {
-                break;
-            }
-
-            x--;
-            y--;
-        }
-
-        // bottom right
-        x = curPos.x + 1;
-        y = curPos.y - 1;
-        while (x < 8 && y >= 0 && squares[y][x]?.color !== this.color) {
-            moves.push({
-                x,
-                y
-            });
-
-            if (this.meetFirstOpponent(squares[y][x])) {
-                break;
-            }
-
-            x++;
-            y--;
-        }
-
-        return moves;
+        return this.getPossibleMovesOnDiagonal(curPos, squares);
     }
 }
