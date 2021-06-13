@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 
 const StyledClock = styled.div`
@@ -24,7 +25,6 @@ const svgStyle = {
 };
 
 const Time = styled.span`
-    font-weight: bold;
     text-align: center;
     font-size: 1.2rem;
 `;
@@ -32,6 +32,9 @@ const Time = styled.span`
 export interface Props {}
 
 const Clock: React.FunctionComponent<Props> = () => {
+    const [minute, setMinute] = useState<number>(10);
+    const [second, setSecond] = useState<number>(0);
+
     return (
         <StyledClock>
             <ClockIcon>
@@ -47,7 +50,9 @@ const Clock: React.FunctionComponent<Props> = () => {
                     <path d='M19.22,6.1a9.9,9.9,0,0,0-2.14-3.18A10.23,10.23,0,0,0,13.9.78,9.76,9.76,0,0,0,10,0,9.86,9.86,0,0,0,6.1.78,10,10,0,0,0,.78,6.1,9.81,9.81,0,0,0,0,10a9.81,9.81,0,0,0,.78,3.9A10,10,0,0,0,6.1,19.22,9.86,9.86,0,0,0,10,20a9.76,9.76,0,0,0,3.89-.78,10.23,10.23,0,0,0,3.18-2.14,9.9,9.9,0,0,0,2.14-3.18A9.81,9.81,0,0,0,20,10,9.81,9.81,0,0,0,19.22,6.1ZM17.07,13a7.65,7.65,0,0,1-1.65,2.42A7.81,7.81,0,0,1,13,17.06a7.46,7.46,0,0,1-3,.6,7.51,7.51,0,0,1-3-.6,7.74,7.74,0,0,1-2.43-1.65A8,8,0,0,1,2.94,13a7.46,7.46,0,0,1-.6-3,7.46,7.46,0,0,1,.6-3A8,8,0,0,1,4.58,4.59,7.74,7.74,0,0,1,7,2.94a7.51,7.51,0,0,1,3-.6,7.45,7.45,0,0,1,3,.6,7.74,7.74,0,0,1,2.43,1.65A7.65,7.65,0,0,1,17.07,7a7.46,7.46,0,0,1,.6,3A7.46,7.46,0,0,1,17.07,13Z'></path>
                 </svg>
             </ClockIcon>
-            <Time>10:00</Time>
+            <Time>
+                {minute}:{second < 10 ? `0${second}` : second}
+            </Time>
         </StyledClock>
     );
 };
