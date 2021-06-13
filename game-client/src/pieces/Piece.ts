@@ -147,6 +147,66 @@ export default abstract class Piece implements PieceInterface {
         return path;
     }
 
+    getPossibleMovesOnColAndRow(
+        curPos: Coordinate,
+        squares: Array<Array<Piece | null>>
+    ): Array<Coordinate> {
+        let moves = [];
+
+        let x = curPos.x,
+            y = curPos.y + 1;
+
+        // top
+        while (y < 8 && squares[y][x]?.color !== this.color) {
+            moves.push({ x, y });
+
+            if (this.meetFirstOpponent(squares[y][x])) {
+                break;
+            }
+
+            y++;
+        }
+
+        // down
+        y = curPos.y - 1;
+        while (y >= 0 && squares[y][x]?.color !== this.color) {
+            moves.push({ x, y });
+
+            if (this.meetFirstOpponent(squares[y][x])) {
+                break;
+            }
+
+            y--;
+        }
+
+        // left
+        x = curPos.x - 1;
+        y = curPos.y;
+        while (x >= 0 && squares[y][x]?.color !== this.color) {
+            moves.push({ x, y });
+
+            if (this.meetFirstOpponent(squares[y][x])) {
+                break;
+            }
+
+            x--;
+        }
+
+        // right
+        x = curPos.x + 1;
+        while (x < 8 && squares[y][x]?.color !== this.color) {
+            moves.push({ x, y });
+
+            if (this.meetFirstOpponent(squares[y][x])) {
+                break;
+            }
+
+            x++;
+        }
+
+        return moves;
+    }
+
     getPossibleMovesOnDiagonal(
         curPos: Coordinate,
         squares: Array<Array<Piece | null>>
