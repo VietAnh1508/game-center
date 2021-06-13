@@ -10,6 +10,8 @@ interface ChessBoardProps {
 }
 
 const ChessBoard = styled.div<ChessBoardProps>`
+    grid-column-start: 1;
+    justify-self: center;
     display: grid;
     grid-template-columns: repeat(8, ${(p) => p.squareSize}px);
     grid-template-rows: repeat(8, ${(p) => p.squareSize}px);

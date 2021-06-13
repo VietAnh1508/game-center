@@ -3,9 +3,14 @@ import styled from 'styled-components';
 import { initialiseChessBoard } from '../helpers/helper';
 import Piece, { Coordinate, PieceColor } from '../pieces/Piece';
 import Board from './Board';
+import GameInfo from './GameInfo';
+import PlayerInfo from './PlayerInfo';
 
 const Container = styled.div`
     display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 40px auto 40px;
+    row-gap: 10px;
     place-content: center;
     height: 100vh;
     background-color: #51504d;
@@ -196,6 +201,10 @@ const Game: React.FunctionComponent<Props> = () => {
 
     return (
         <Container>
+            <PlayerInfo
+                userAvatar='https://betacssjs.chesscomfiles.com/bundles/web/images/user-image.svg'
+                username='user 1'
+            />
             <Board
                 ref={chessBoardEl}
                 boardSize={boardSize}
@@ -207,6 +216,11 @@ const Game: React.FunctionComponent<Props> = () => {
                 onMouseMove={(e) => movePiece(e)}
                 onMouseUp={(e) => dropPiece(e)}
             />
+            <PlayerInfo
+                userAvatar='https://betacssjs.chesscomfiles.com/bundles/web/images/user-image.svg'
+                username='user 2'
+            />
+            <GameInfo />
         </Container>
     );
 };
