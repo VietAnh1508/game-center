@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { initialiseChessBoard } from '../helpers/helper';
 import Piece, { Coordinate, PieceColor } from '../pieces/Piece';
 import Board from './Board';
+import Clock from './Clock';
 import GameInfo from './GameInfo';
 import PlayerInfo from './PlayerInfo';
 
@@ -15,6 +16,21 @@ const Container = styled.div`
     height: 100vh;
     background-color: #51504d;
 `;
+
+const PlayerSection = styled.div`
+    grid-column: 1 / 2;
+    width: 560px;
+    justify-self: center;
+    display: grid;
+    grid-template-columns: 40px auto 140px;
+    grid-template-rows: 20px 20px;
+    column-gap: 5px;
+`;
+
+export interface TimeCountdown {
+    minute: number;
+    second: number;
+}
 
 interface Props {}
 
@@ -32,6 +48,15 @@ const Game: React.FunctionComponent<Props> = () => {
     const [turn, setTurn] = useState<PieceColor>(PieceColor.WHITE);
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
     const [hintSquares, setHintSquares] = useState<Array<Coordinate>>([]);
+    const [gameStarted, setGameStarted] = useState<boolean>(false);
+    const [player1Countdown, setPlayer1Coundown] = useState<TimeCountdown>({
+        minute: 10,
+        second: 0
+    });
+    const [player2Countdown, setPlayer2Coundown] = useState<TimeCountdown>({
+        minute: 10,
+        second: 0
+    });
 
     let chessBoardEl = useRef<HTMLDivElement>(null);
 
@@ -199,12 +224,19 @@ const Game: React.FunctionComponent<Props> = () => {
         return true;
     };
 
+    const handleStartGame = (): void => {
+        setGameStarted(true);
+    };
+
     return (
         <Container>
-            <PlayerInfo
-                userAvatar='https://betacssjs.chesscomfiles.com/bundles/web/images/user-image.svg'
-                username='user 1'
-            />
+            <PlayerSection>
+                <PlayerInfo
+                    userAvatar='https://betacssjs.chesscomfiles.com/bundles/web/images/user-image.svg'
+                    username='user 1'
+                />
+                <Clock player={2} countdown={player2Countdown} />
+            </PlayerSection>
             <Board
                 ref={chessBoardEl}
                 boardSize={boardSize}
@@ -216,11 +248,14 @@ const Game: React.FunctionComponent<Props> = () => {
                 onMouseMove={(e) => movePiece(e)}
                 onMouseUp={(e) => dropPiece(e)}
             />
-            <PlayerInfo
-                userAvatar='https://betacssjs.chesscomfiles.com/bundles/web/images/user-image.svg'
-                username='user 2'
-            />
-            <GameInfo />
+            <PlayerSection>
+                <PlayerInfo
+                    userAvatar='https://betacssjs.chesscomfiles.com/bundles/web/images/user-image.svg'
+                    username='user 2'
+                />
+                <Clock player={1} countdown={player1Countdown} />
+            </PlayerSection>
+            <GameInfo startGame={handleStartGame} />
         </Container>
     );
 };

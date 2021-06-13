@@ -1,17 +1,5 @@
 import styled from 'styled-components';
 
-import Clock from './Clock';
-
-const InfoPanel = styled.div`
-    grid-column: 1 / 2;
-    width: 560px;
-    justify-self: center;
-    display: grid;
-    grid-template-columns: 40px auto 140px;
-    grid-template-rows: 20px 20px;
-    column-gap: 5px;
-`;
-
 interface AvatarProps {
     imageUrl: string;
 }
@@ -34,15 +22,15 @@ const Username = styled.div`
 export interface Props {
     userAvatar: string;
     username: string;
+    isGameStarted?: boolean;
 }
 
 const PlayerInfo: React.FunctionComponent<Props> = (props) => {
     return (
-        <InfoPanel>
+        <>
             <Avatar imageUrl={props.userAvatar} />
             <Username>{props.username}</Username>
-            <Clock />
-        </InfoPanel>
+        </>
     );
 };
 

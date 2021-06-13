@@ -1,7 +1,5 @@
 import styled from 'styled-components';
 
-export interface Props {}
-
 const Panel = styled.div`
     grid-column: 2 / 3;
     grid-row: 1 / 2;
@@ -10,8 +8,16 @@ const Panel = styled.div`
     background-color: white;
 `;
 
-const GameInfo: React.FunctionComponent<Props> = () => {
-    return <Panel>Info panel</Panel>;
+interface Props {
+    startGame: (e: React.MouseEvent) => void;
+}
+
+const GameInfo: React.FunctionComponent<Props> = (props) => {
+    return (
+        <Panel>
+            <button onClick={props.startGame}>start</button>
+        </Panel>
+    );
 };
 
 export default GameInfo;

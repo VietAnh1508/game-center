@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import { TimeCountdown } from './Game';
 
 const StyledClock = styled.div`
     grid-column: 3 / 4;
@@ -29,12 +30,12 @@ const Time = styled.span`
     font-size: 1.2rem;
 `;
 
-export interface Props {}
+export interface Props {
+    player: number;
+    countdown: TimeCountdown;
+}
 
-const Clock: React.FunctionComponent<Props> = () => {
-    const [minute, setMinute] = useState<number>(10);
-    const [second, setSecond] = useState<number>(0);
-
+const Clock: React.FunctionComponent<Props> = (props) => {
     return (
         <StyledClock>
             <ClockIcon>
@@ -51,7 +52,10 @@ const Clock: React.FunctionComponent<Props> = () => {
                 </svg>
             </ClockIcon>
             <Time>
-                {minute}:{second < 10 ? `0${second}` : second}
+                {props.countdown.minute}:
+                {props.countdown.second < 10
+                    ? `0${props.countdown.second}`
+                    : props.countdown.second}
             </Time>
         </StyledClock>
     );
