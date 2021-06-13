@@ -43,7 +43,7 @@ const Game: React.FunctionComponent<Props> = () => {
             const { x, y } = getBoardCoordinateUnderMouse(e, chessBoard);
 
             const selectedPiece = squares[y][x];
-            if (selectedPiece!.color !== turn) {
+            if (selectedPiece !== null && selectedPiece!.color !== turn) {
                 return;
             } else {
                 setActivePieceCoordinate(null);
