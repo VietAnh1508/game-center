@@ -23,7 +23,13 @@ export default class Queen extends Piece {
         return [...straightLinePath, ...diagonalPath];
     }
 
-    getPossibleMoves(curPos: Coordinate): Array<Coordinate> {
-        return [];
+    getPossibleMoves(
+        curPos: Coordinate,
+        squares: Array<Array<Piece | null>>
+    ): Array<Coordinate> {
+        return [
+            ...this.getPossibleMovesOnColAndRow(curPos, squares),
+            ...this.getPossibleMovesOnDiagonal(curPos, squares)
+        ];
     }
 }
