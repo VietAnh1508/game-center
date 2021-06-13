@@ -63,4 +63,8 @@ export default abstract class Piece implements PieceInterface {
         curPos: Coordinate,
         squares: Array<Array<Piece | null>>
     ): Array<Coordinate>;
+
+    meetFirstOpponent(piece: Piece | null): boolean {
+        return piece !== null && piece?.color !== this.color;
+    }
 }

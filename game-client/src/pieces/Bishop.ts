@@ -88,8 +88,4 @@ export default class Bishop extends Piece {
 
         return moves;
     }
-
-    meetFirstOpponent(piece: Piece | null): boolean {
-        return piece !== null && piece?.color !== this.color;
-    }
 }
