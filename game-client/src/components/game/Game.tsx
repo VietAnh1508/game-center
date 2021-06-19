@@ -1,32 +1,12 @@
-import React, { useState, useRef } from 'react';
-import { useEffect } from 'react';
-import styled from 'styled-components';
-import { initialiseChessBoard } from '../helpers/helper';
-import Piece, { Coordinate, PieceColor } from '../pieces/Piece';
-import Board from './Board';
-import Clock from './Clock';
-import GameInfo from './GameInfo';
-import PlayerInfo from './PlayerInfo';
+import React, { useState, useRef, useEffect } from 'react';
+import { initialiseChessBoard } from '../../helpers/helper';
+import Piece, { Coordinate, PieceColor } from '../../pieces/Piece';
+import Board from '../board/Board';
+import Clock from '../clock/Clock';
+import GameInfo from '../game-info/GameInfo';
+import PlayerInfo from '../player-info/PlayerInfo';
 
-const Container = styled.div`
-    display: grid;
-    grid-template-columns: 50% 50%;
-    grid-template-rows: 40px auto 40px;
-    row-gap: 10px;
-    place-content: center;
-    height: 100vh;
-    background-color: #51504d;
-`;
-
-const PlayerSection = styled.div`
-    grid-column: 1 / 2;
-    width: 560px;
-    justify-self: center;
-    display: grid;
-    grid-template-columns: 40px auto 140px;
-    grid-template-rows: 20px 20px;
-    column-gap: 5px;
-`;
+import { Container, PlayerSection } from './stlye';
 
 export interface TimeCountdown {
     minute: number;

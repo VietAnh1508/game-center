@@ -1,23 +1,9 @@
 import React from 'react';
-import styled from 'styled-components';
 
-import Square from './Square';
-import Piece, { Coordinate } from '../pieces/Piece';
+import { ChessBoard } from './style';
 
-interface ChessBoardProps {
-    boardSize: number;
-    squareSize: number;
-}
-
-const ChessBoard = styled.div<ChessBoardProps>`
-    grid-column-start: 1;
-    justify-self: center;
-    display: grid;
-    grid-template-columns: repeat(8, ${(p) => p.squareSize}px);
-    grid-template-rows: repeat(8, ${(p) => p.squareSize}px);
-    width: ${(p) => p.boardSize}px;
-    height: ${(p) => p.boardSize}px;
-`;
+import Square from '../square/Square';
+import Piece, { Coordinate } from '../../pieces/Piece';
 
 interface Props {
     boardSize: number;

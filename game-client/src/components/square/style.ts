@@ -1,14 +1,12 @@
 import styled from 'styled-components';
 
-import Piece from '../pieces/Piece';
-
 interface StyleSquareProps {
     size: number;
     isShade: boolean;
     isHighlight: boolean;
 }
 
-const StyledSquare = styled.div<StyleSquareProps>`
+export const StyledSquare = styled.div<StyleSquareProps>`
     width: ${(p) => p.size}px;
     background-color: ${(p) => {
         if (p.isShade) {
@@ -25,7 +23,7 @@ interface StyledPieceProps {
     background: string;
 }
 
-const ChessPiece = styled.div<StyledPieceProps>`
+export const ChessPiece = styled.div<StyledPieceProps>`
     width: ${(p) => p.size}px;
     height: ${(p) => p.size}px;
     background-image: url('${(p) => p.background}');
@@ -41,7 +39,7 @@ const ChessPiece = styled.div<StyledPieceProps>`
     }
 `;
 
-const Hint = styled.div`
+export const Hint = styled.div`
     border-radius: 50%;
     background-color: rgba(0, 0, 0, 0.1);
     width: 25px; // TODO: dynamic value
@@ -52,40 +50,10 @@ interface CaptureHintProps {
     size: number;
 }
 
-const CaptureHint = styled.div<CaptureHintProps>`
+export const CaptureHint = styled.div<CaptureHintProps>`
     border: 5px solid rgba(0, 0, 0, 0.1);
     width: ${(p) => p.size}px;
     height: ${(p) => p.size}px;
     border-radius: 50%;
     position: absolute;
 `;
-
-interface Props {
-    size: number;
-    isShade: boolean;
-    isHighlight: boolean;
-    isHint: boolean;
-    piece: Piece | null;
-}
-
-const Square: React.FunctionComponent<Props> = (props) => {
-    return (
-        <StyledSquare
-            size={props.size}
-            isShade={props.isShade}
-            isHighlight={props.isHighlight}
-        >
-            {props.piece && (
-                <ChessPiece
-                    size={props.size}
-                    background={props.piece.icon}
-                    className='chess-piece'
-                />
-            )}
-            {props.isHint &&
-                (props.piece ? <CaptureHint size={props.size} /> : <Hint />)}
-        </StyledSquare>
-    );
-};
-
-export default Square;
