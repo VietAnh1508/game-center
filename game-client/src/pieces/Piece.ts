@@ -13,7 +13,8 @@ export enum PieceName {
 
 export enum PieceColor {
     BLACK,
-    WHITE
+    WHITE,
+    RANDOM
 }
 
 export interface PieceInterface {

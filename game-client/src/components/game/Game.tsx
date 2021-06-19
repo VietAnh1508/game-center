@@ -29,6 +29,9 @@ const Game: React.FunctionComponent<Props> = () => {
     const [turn, setTurn] = useState<PieceColor>(PieceColor.WHITE);
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
     const [hintSquares, setHintSquares] = useState<Array<Coordinate>>([]);
+    const [playerSelectedColor, setPlayerSelectedColor] = useState<PieceColor>(
+        PieceColor.RANDOM
+    );
     const [player1Countdown, setPlayer1Coundown] = useState<TimeCountdown>({
         minute: 10,
         second: 0
@@ -238,6 +241,12 @@ const Game: React.FunctionComponent<Props> = () => {
         return true;
     };
 
+    const onColorSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPlayerSelectedColor(
+            PieceColor[e.target.value as keyof typeof PieceColor]
+        );
+    };
+
     const handleStartGame = (): void => {
         // player 1 is white
         countDown1Id = setInterval(() => {
@@ -320,7 +329,11 @@ const Game: React.FunctionComponent<Props> = () => {
                 />
                 <Clock player={1} countdown={player1Countdown} />
             </PlayerSection>
-            <GameInfo startGame={handleStartGame} />
+            <GameInfo
+                selectedColor={playerSelectedColor}
+                handleSelectPieceColor={onColorSelected}
+                startGame={handleStartGame}
+            />
         </Container>
     );
 };
