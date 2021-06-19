@@ -318,6 +318,7 @@ const Game: React.FunctionComponent<Props> = () => {
                 squares={squares}
                 highlightedSquares={highlightedSquares}
                 hintSquares={hintSquares}
+                playerSelectedColor={playerSelectedColor}
                 onMouseDown={(e) => grabPiece(e)}
                 onMouseMove={(e) => movePiece(e)}
                 onMouseUp={(e) => dropPiece(e)}
