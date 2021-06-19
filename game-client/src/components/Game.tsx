@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import { initialiseChessBoard } from '../helpers/helper';
 import Piece, { Coordinate, PieceColor } from '../pieces/Piece';
@@ -48,17 +49,48 @@ const Game: React.FunctionComponent<Props> = () => {
     const [turn, setTurn] = useState<PieceColor>(PieceColor.WHITE);
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
     const [hintSquares, setHintSquares] = useState<Array<Coordinate>>([]);
-    const [gameStarted, setGameStarted] = useState<boolean>(false);
     const [player1Countdown, setPlayer1Coundown] = useState<TimeCountdown>({
         minute: 10,
         second: 0
     });
+    const [isCountdown1Pause, setIsCountdown1Pause] = useState<boolean>(false);
     const [player2Countdown, setPlayer2Coundown] = useState<TimeCountdown>({
         minute: 10,
         second: 0
     });
+    const [isCountdown2Pause, setIsCountdown2Pause] = useState<boolean>(false);
+    let countDown1Id: NodeJS.Timeout;
+    let countDown2Id: NodeJS.Timeout;
 
     let chessBoardEl = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (turn === PieceColor.WHITE) {
+            return () => clearInterval(countDown1Id);
+        }
+
+        if (turn === PieceColor.BLACK) {
+            return () => clearInterval(countDown2Id);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (
+            turn === PieceColor.WHITE &&
+            player1Countdown.minute === 0 &&
+            player1Countdown.second === 0
+        ) {
+            clearInterval(countDown1Id);
+        }
+
+        if (
+            turn === PieceColor.BLACK &&
+            player2Countdown.minute === 0 &&
+            player2Countdown.second === 0
+        ) {
+            clearInterval(countDown2Id);
+        }
+    }, [player1Countdown, player2Countdown]);
 
     const grabPiece = (e: React.MouseEvent): void => {
         setIsMouseDown(true);
@@ -182,6 +214,8 @@ const Game: React.FunctionComponent<Props> = () => {
                 highlighted.push({ x: destination.x, y: destination.y });
                 setHighlightedSquares(highlighted);
 
+                switchTimerCountdown();
+
                 setTurn(
                     turn === PieceColor.WHITE
                         ? PieceColor.BLACK
@@ -225,7 +259,58 @@ const Game: React.FunctionComponent<Props> = () => {
     };
 
     const handleStartGame = (): void => {
-        setGameStarted(true);
+        // player 1 is white
+        countDown1Id = setInterval(() => {
+            setPlayer1Coundown((time) => {
+                const newSec = time.second === 0 ? 59 : time.second - 1;
+                const newMin = newSec === 59 ? time.minute - 1 : time.minute;
+
+                return {
+                    minute: newMin,
+                    second: newSec
+                };
+            });
+        }, 1000);
+    };
+
+    const switchTimerCountdown = () => {
+        if (turn === PieceColor.BLACK) {
+            setIsCountdown2Pause(true);
+            setIsCountdown1Pause(false);
+
+            countDown1Id = setInterval(() => {
+                if (!isCountdown1Pause) {
+                    setPlayer1Coundown((time) => {
+                        const newSec = time.second === 0 ? 59 : time.second - 1;
+                        const newMin =
+                            newSec === 59 ? time.minute - 1 : time.minute;
+
+                        return {
+                            minute: newMin,
+                            second: newSec
+                        };
+                    });
+                }
+            }, 1000);
+        } else {
+            setIsCountdown1Pause(true);
+            setIsCountdown2Pause(false);
+
+            countDown2Id = setInterval(() => {
+                if (!isCountdown2Pause) {
+                    setPlayer2Coundown((time) => {
+                        const newSec = time.second === 0 ? 59 : time.second - 1;
+                        const newMin =
+                            newSec === 59 ? time.minute - 1 : time.minute;
+
+                        return {
+                            minute: newMin,
+                            second: newSec
+                        };
+                    });
+                }
+            }, 1000);
+        }
     };
 
     return (
@@ -233,7 +318,7 @@ const Game: React.FunctionComponent<Props> = () => {
             <PlayerSection>
                 <PlayerInfo
                     userAvatar='https://betacssjs.chesscomfiles.com/bundles/web/images/user-image.svg'
-                    username='user 1'
+                    username='user 2'
                 />
                 <Clock player={2} countdown={player2Countdown} />
             </PlayerSection>
@@ -251,7 +336,7 @@ const Game: React.FunctionComponent<Props> = () => {
             <PlayerSection>
                 <PlayerInfo
                     userAvatar='https://betacssjs.chesscomfiles.com/bundles/web/images/user-image.svg'
-                    username='user 2'
+                    username='user 1'
                 />
                 <Clock player={1} countdown={player1Countdown} />
             </PlayerSection>
