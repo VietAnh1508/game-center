@@ -1,9 +1,12 @@
 import Piece, { PieceColor, Coordinate } from './Piece';
 
 export default class Pawn extends Piece {
+    direction: number;
+
     constructor(player: number, color: PieceColor) {
         super(player, color);
         this.icon = `assets/images/pawn_${this.colorSymbol}.png`;
+        this.direction = player === 1 ? -1 : 1;
     }
 
     isMovePossible(
@@ -11,22 +14,24 @@ export default class Pawn extends Piece {
         dest: Coordinate,
         isDestEnemyOccupied: boolean
     ): boolean {
-        // TODO: en passant
-        const direction = this.color === PieceColor.WHITE ? 1 : -1;
-        const startingRow = this.color === PieceColor.WHITE ? 1 : 6;
+        const startingRow = this.player === 1 ? 6 : 1;
+
         if (src.x === dest.x) {
             if (
                 !isDestEnemyOccupied &&
-                (src.y + direction === dest.y ||
-                    (src.y === startingRow && src.y + direction * 2 === dest.y))
+                (src.y + this.direction === dest.y ||
+                    (src.y === startingRow &&
+                        src.y + this.direction * 2 === dest.y))
             ) {
                 return true;
             }
         } else if (
-            src.y + direction === dest.y &&
-            (src.x - direction === dest.x || src.x + direction === dest.x)
+            src.y + this.direction === dest.y &&
+            (src.x - this.direction === dest.x ||
+                src.x + this.direction === dest.x)
         ) {
             // capture
+            // TODO: en passant
             return isDestEnemyOccupied;
         }
 
@@ -34,10 +39,9 @@ export default class Pawn extends Piece {
     }
 
     getSrcToDestPath(src: Coordinate, dest: Coordinate): Array<Coordinate> {
-        const direction = this.color === PieceColor.WHITE ? 1 : -1;
         if (src.x === dest.x) {
-            if (src.y + direction * 2 === dest.y) {
-                return [{ x: src.x, y: src.y + direction }];
+            if (src.y + this.direction * 2 === dest.y) {
+                return [{ x: src.x, y: src.y + this.direction }];
             }
         }
         return [];
@@ -47,45 +51,44 @@ export default class Pawn extends Piece {
         curPos: Coordinate,
         squares: Array<Array<Piece | null>>
     ): Array<Coordinate> {
-        const direction = this.color === PieceColor.WHITE ? 1 : -1;
         let moves = [];
 
-        const move1 = {
+        const move1Step = {
             x: curPos.x,
-            y: curPos.y + direction
+            y: curPos.y + this.direction
         };
 
-        if (squares[move1.y][move1.x] === null) {
-            moves.push(move1);
+        if (squares[move1Step.y][move1Step.x] === null) {
+            moves.push(move1Step);
         }
 
-        let move2;
+        let move2Steps;
 
-        if (this.color === PieceColor.WHITE && curPos.y === 1) {
-            move2 = {
+        if (this.player === 1 && curPos.y === 6) {
+            move2Steps = {
                 x: curPos.x,
-                y: curPos.y + 2
+                y: curPos.y + this.direction * 2
             };
         }
 
-        if (this.color === PieceColor.BLACK && curPos.y === 6) {
-            move2 = {
+        if (this.player === 2 && curPos.y === 1) {
+            move2Steps = {
                 x: curPos.x,
-                y: curPos.y - 2
+                y: curPos.y + this.direction * 2
             };
         }
 
         if (
-            move2 &&
-            squares[move1.y][move1.x] === null &&
-            squares[move2.y][move2.x] === null
+            move2Steps &&
+            squares[move2Steps.y][move2Steps.x] === null &&
+            squares[move2Steps.y][move2Steps.x] === null
         ) {
-            moves.push(move2);
+            moves.push(move2Steps);
         }
 
         const takeLeftMove = {
-            x: this.color === PieceColor.WHITE ? curPos.x - 1 : curPos.x + 1,
-            y: this.color === PieceColor.WHITE ? curPos.y + 1 : curPos.y - 1
+            x: curPos.x + this.direction,
+            y: curPos.y + this.direction
         };
 
         if (
@@ -96,8 +99,8 @@ export default class Pawn extends Piece {
         }
 
         const takeRightMove = {
-            x: this.color === PieceColor.WHITE ? curPos.x + 1 : curPos.x - 1,
-            y: this.color === PieceColor.WHITE ? curPos.y + 1 : curPos.y - 1
+            x: curPos.x - this.direction,
+            y: curPos.y + this.direction
         };
 
         if (
