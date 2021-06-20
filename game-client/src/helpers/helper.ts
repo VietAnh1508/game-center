@@ -34,8 +34,17 @@ export const initialiseChessBoard = (
             playerHasBlackPieces =
                 playerSelectedColor === PieceColor.BLACK ? 1 : 2;
 
-        squares[1][col] = new Pawn(playerHasWhitePieces, PieceColor.WHITE);
-        squares[6][col] = new Pawn(playerHasBlackPieces, PieceColor.BLACK);
+        const whitePiecesRow = playerHasWhitePieces === 1 ? 6 : 1,
+            blackPiecesRow = 7 - whitePiecesRow;
+
+        squares[whitePiecesRow][col] = new Pawn(
+            playerHasWhitePieces,
+            PieceColor.WHITE
+        );
+        squares[blackPiecesRow][col] = new Pawn(
+            playerHasBlackPieces,
+            PieceColor.BLACK
+        );
     }
 
     const defaultPiecePosition: Array<PieceName> = [
@@ -56,7 +65,7 @@ export const initialiseChessBoard = (
                 : playerSelectedColor === PieceColor.BLACK
                 ? PieceColor.WHITE
                 : PieceColor.BLACK;
-        const row = pieceColor === PieceColor.WHITE ? 0 : 7;
+        const row = player === 1 ? 7 : 0;
 
         for (let col = 0; col < 8; col++) {
             squares[row][col] = createPiece(

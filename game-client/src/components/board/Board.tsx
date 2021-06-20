@@ -20,38 +20,16 @@ interface Props {
 const Board = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
     const SQUARE_SIZE = props.boardSize / 8;
 
-    const drawSquares = () => {
-        let squares: Array<ReactElement> = [];
+    let squares: Array<ReactElement> = [];
 
-        switch (props.playerSelectedColor) {
-            case PieceColor.WHITE:
-            case PieceColor.RANDOM:
-                for (let i = 7; i >= 0; i--) {
-                    drawColums(i, i, squares);
-                }
-                break;
-            case PieceColor.BLACK:
-                for (let i = 0, shadeIndex = 7; i < 8; i++, shadeIndex--) {
-                    drawColums(i, shadeIndex, squares);
-                }
-                break;
-        }
-
-        return squares;
-    };
-
-    const drawColums = (
-        row: number,
-        shadeIndex: number,
-        squares: Array<ReactElement>
-    ) => {
+    for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
-            const isShade = (shadeIndex + j) % 2 === 0, // the piece's position can be changed, but the board has to stay the same
-                piece = props.squares[row][j];
+            const isShade = (i + j) % 2 !== 0,
+                piece = props.squares[i][j];
 
             let isHighlight = false;
             for (let position of props.highlightedSquares) {
-                if (position.x === j && position.y === row) {
+                if (position.x === j && position.y === i) {
                     isHighlight = true;
                     break;
                 }
@@ -59,7 +37,7 @@ const Board = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
 
             let isHint = false;
             for (let position of props.hintSquares) {
-                if (position.x === j && position.y === row) {
+                if (position.x === j && position.y === i) {
                     isHint = true;
                     break;
                 }
@@ -67,7 +45,7 @@ const Board = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
 
             squares.push(
                 <Square
-                    key={`${row}${j}`}
+                    key={`${i}${j}`}
                     size={SQUARE_SIZE}
                     isShade={isShade}
                     isHighlight={isHighlight}
@@ -76,7 +54,7 @@ const Board = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
                 />
             );
         }
-    };
+    }
 
     return (
         <ChessBoard
@@ -87,7 +65,7 @@ const Board = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
             onMouseMove={(e) => props.onMouseMove(e)}
             onMouseUp={(e) => props.onMouseUp(e)}
         >
-            {drawSquares()}
+            {squares}
         </ChessBoard>
     );
 });

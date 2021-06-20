@@ -220,11 +220,7 @@ const Game: React.FunctionComponent<Props> = () => {
         board: HTMLDivElement
     ): Coordinate => {
         const col = Math.floor((e.clientX - board.offsetLeft) / squareSize),
-            row = Math.abs(
-                Math.ceil(
-                    (e.clientY - board.offsetTop - boardSize) / squareSize
-                )
-            );
+            row = Math.floor((e.clientY - board.offsetTop) / squareSize);
 
         return {
             x: col,
@@ -243,9 +239,14 @@ const Game: React.FunctionComponent<Props> = () => {
     };
 
     const onColorSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const selectedColor =
+        let selectedColor =
             PieceColor[e.target.value as keyof typeof PieceColor];
         setPlayerSelectedColor(selectedColor);
+
+        if (selectedColor === PieceColor.RANDOM) {
+            // TODO: fix this
+            selectedColor = PieceColor.WHITE;
+        }
         setSquares(initialiseChessBoard(selectedColor));
     };
 
