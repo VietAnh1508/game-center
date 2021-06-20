@@ -4,7 +4,10 @@ import {
     Panel,
     ModeSelectionBlock,
     ModeSelectionBox,
-    ModeSelectionRadio
+    ModeSelectionRadio,
+    SelectTimeBox,
+    PlayButton,
+    Footer
 } from './style';
 
 interface Props {
@@ -16,7 +19,7 @@ interface Props {
 const GameInfo: React.FunctionComponent<Props> = (props) => {
     return (
         <Panel>
-            <label>I play as</label>
+            <span>I play as</span>
             <ModeSelectionBlock>
                 <ModeSelectionBox
                     selectedColor={props.selectedColor}
@@ -49,14 +52,17 @@ const GameInfo: React.FunctionComponent<Props> = (props) => {
                     />
                 </ModeSelectionBox>
             </ModeSelectionBlock>
-            <label htmlFor='countdoưn'>Select time limit</label>
-            <select name='time' id='countdown'>
-                <option value='3m'>3 min</option>
-                <option value='5m'>5 min</option>
-                <option value='10m'>10 min</option>
-            </select>
-            <br />
-            <button onClick={props.startGame}>start</button>
+            <SelectTimeBox>
+                <label htmlFor='countdown'>Select time limit</label>
+                <select name='time' id='countdown'>
+                    <option value='3m'>3 min</option>
+                    <option value='5m'>5 min</option>
+                    <option value='10m'>10 min</option>
+                </select>
+            </SelectTimeBox>
+            <Footer>
+                <PlayButton onClick={props.startGame}>Play</PlayButton>
+            </Footer>
         </Panel>
     );
 };
