@@ -18,8 +18,9 @@ interface Props {}
 const Game: React.FunctionComponent<Props> = () => {
     const [boardSize] = useState<number>(560);
     const [squareSize] = useState<number>(boardSize / 8);
-    const [squares, setSquares] =
-        useState<(Piece | null)[][]>(initialiseChessBoard);
+    const [squares, setSquares] = useState<(Piece | null)[][]>(() =>
+        initialiseChessBoard(PieceColor.WHITE)
+    );
     const [activePieceCoordinate, setActivePieceCoordinate] =
         useState<Coordinate | null>(null);
     const [activePiece, setActivePiece] = useState<HTMLElement | null>(null);
@@ -242,9 +243,10 @@ const Game: React.FunctionComponent<Props> = () => {
     };
 
     const onColorSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setPlayerSelectedColor(
-            PieceColor[e.target.value as keyof typeof PieceColor]
-        );
+        const selectedColor =
+            PieceColor[e.target.value as keyof typeof PieceColor];
+        setPlayerSelectedColor(selectedColor);
+        setSquares(initialiseChessBoard(selectedColor));
     };
 
     const handleStartGame = (): void => {
