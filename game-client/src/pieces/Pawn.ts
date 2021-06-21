@@ -2,19 +2,23 @@ import Piece, { PieceColor, Coordinate, PieceName } from './Piece';
 
 export default class Pawn extends Piece {
     direction: number;
+    enPassantCapture: boolean;
 
     constructor(name: PieceName, player: number, color: PieceColor) {
         super(name, player, color);
         this.icon = `assets/images/pawn_${this.colorSymbol}.png`;
         this.direction = player === 1 ? -1 : 1;
+        this.enPassantCapture = false;
     }
 
     isMovePossible(
         src: Coordinate,
         dest: Coordinate,
-        isDestEnemyOccupied: boolean
+        isDestEnemyOccupied: boolean,
+        enPassant: Coordinate | null
     ): boolean {
         const startingRow = this.player === 1 ? 6 : 1;
+        this.enPassantCapture = false;
 
         if (src.x === dest.x) {
             if (
@@ -30,8 +34,13 @@ export default class Pawn extends Piece {
             (src.x - this.direction === dest.x ||
                 src.x + this.direction === dest.x)
         ) {
-            // capture
-            // TODO: en passant
+            if (enPassant && dest.x === enPassant.x && dest.y === enPassant.y) {
+                // en passant
+                this.enPassantCapture = true;
+                return true;
+            }
+
+            // normal capture
             return isDestEnemyOccupied;
         }
 
@@ -111,5 +120,9 @@ export default class Pawn extends Piece {
         }
 
         return moves;
+    }
+
+    isEnPassantCapture() {
+        return this.enPassantCapture;
     }
 }

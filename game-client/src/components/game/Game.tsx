@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { initialiseChessBoard } from '../../helpers/helper';
-import Piece, { Coordinate, PieceColor } from '../../pieces/Piece';
+import Piece, { Coordinate, PieceColor, PieceName } from '../../pieces/Piece';
 import Board from '../board/Board';
 import Clock from '../clock/Clock';
 import GameInfo from '../game-info/GameInfo';
@@ -30,6 +30,7 @@ const Game: React.FunctionComponent<Props> = () => {
     const [turn, setTurn] = useState<PieceColor>(PieceColor.WHITE);
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
     const [hintSquares, setHintSquares] = useState<Array<Coordinate>>([]);
+    const [enPassant, setEnPassant] = useState<Coordinate | null>(null);
     const [playerSelectedColor, setPlayerSelectedColor] = useState<PieceColor>(
         PieceColor.RANDOM
     );
@@ -110,7 +111,11 @@ const Game: React.FunctionComponent<Props> = () => {
 
             setActivePiece(element);
 
-            setHintSquares(selectedPiece!.getPossibleMoves({ x, y }, squares));
+            const hints = selectedPiece!.getPossibleMoves({ x, y }, squares);
+            if (enPassant) {
+                hints.push(enPassant);
+            }
+            setHintSquares(hints);
         }
     };
 
@@ -171,7 +176,8 @@ const Game: React.FunctionComponent<Props> = () => {
             const isMovePossible: boolean = sourceSquare!.isMovePossible(
                 activePieceCoordinate,
                 destination,
-                !!destinationSquare
+                !!destinationSquare,
+                enPassant
             );
 
             const srcToDestPath: Array<Coordinate> =
@@ -185,12 +191,32 @@ const Game: React.FunctionComponent<Props> = () => {
                 sourceSquare?.color !== destinationSquare?.color;
 
             if (isMovePossible && isLegal) {
+                setEnPassant(null);
+                setEnPassantMoveIfExist(
+                    squaresCopy,
+                    activePieceCoordinate,
+                    destination
+                );
+
                 squaresCopy[destination.y][destination.x] =
                     squaresCopy[activePieceCoordinate.y][
                         activePieceCoordinate.x
                     ];
                 squaresCopy[activePieceCoordinate.y][activePieceCoordinate.x] =
                     null;
+
+                if (
+                    squaresCopy[destination.y][
+                        destination.x
+                    ]?.isEnPassantCapture()
+                ) {
+                    const direction =
+                        squaresCopy[destination.y][destination.x]?.player === 1
+                            ? 1
+                            : -1;
+                    squaresCopy[destination.y + direction][destination.x] =
+                        null;
+                }
 
                 setSquares(squaresCopy);
 
@@ -236,6 +262,33 @@ const Game: React.FunctionComponent<Props> = () => {
         }
 
         return true;
+    };
+
+    const setEnPassantMoveIfExist = (
+        squares: (Piece | null)[][],
+        src: Coordinate,
+        dest: Coordinate
+    ) => {
+        const currentPiece = squares[src.y][src.x],
+            leftOpponent = squares[dest.y][dest.x - 1], // from the normal coordinate point of view, not from the player's view
+            rightOpponent = squares[dest.y][dest.x + 1],
+            player = currentPiece?.player;
+
+        if (
+            currentPiece?.name === PieceName.PAWN &&
+            Math.abs(dest.y - src.y) === 2 &&
+            ((leftOpponent?.name === PieceName.PAWN &&
+                leftOpponent.color !== currentPiece?.color) ||
+                (rightOpponent?.name === PieceName.PAWN &&
+                    rightOpponent.color !== currentPiece?.color))
+        ) {
+            const direction = player === 1 ? 1 : -1;
+
+            setEnPassant({
+                x: dest.x,
+                y: dest.y + direction
+            });
+        }
     };
 
     const onColorSelected = (e: React.ChangeEvent<HTMLInputElement>) => {

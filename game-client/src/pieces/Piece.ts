@@ -27,7 +27,8 @@ export interface PieceInterface {
     isMovePossible(
         src: Coordinate,
         dest: Coordinate,
-        isDestEnemyOccupied: boolean
+        isDestEnemyOccupied: boolean,
+        enPassant: Coordinate | null
     ): boolean;
 
     getSrcToDestPath(src: Coordinate, dest: Coordinate): Array<Coordinate>;
@@ -36,6 +37,8 @@ export interface PieceInterface {
         curPos: Coordinate,
         squares: Array<Array<Piece | null>>
     ): Array<Coordinate>;
+
+    isEnPassantCapture(): boolean;
 }
 
 export default abstract class Piece implements PieceInterface {
@@ -56,7 +59,8 @@ export default abstract class Piece implements PieceInterface {
     abstract isMovePossible(
         src: Coordinate,
         dest: Coordinate,
-        isDestEnemyOccupied: boolean
+        isDestEnemyOccupied: boolean,
+        enPassant: Coordinate | null
     ): boolean;
 
     abstract getSrcToDestPath(
@@ -293,5 +297,9 @@ export default abstract class Piece implements PieceInterface {
 
     meetFirstOpponent(piece: Piece | null): boolean {
         return piece !== null && piece?.color !== this.color;
+    }
+
+    isEnPassantCapture(): boolean {
+        return false;
     }
 }
