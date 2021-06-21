@@ -1,10 +1,10 @@
-import Piece, { PieceColor, Coordinate } from './Piece';
+import Piece, { PieceColor, Coordinate, PieceName } from './Piece';
 
 export default class Pawn extends Piece {
     direction: number;
 
-    constructor(player: number, color: PieceColor) {
-        super(player, color);
+    constructor(name: PieceName, player: number, color: PieceColor) {
+        super(name, player, color);
         this.icon = `assets/images/pawn_${this.colorSymbol}.png`;
         this.direction = player === 1 ? -1 : 1;
     }

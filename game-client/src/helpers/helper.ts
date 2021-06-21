@@ -38,10 +38,12 @@ export const initialiseChessBoard = (
             blackPiecesRow = 7 - whitePiecesRow;
 
         squares[whitePiecesRow][col] = new Pawn(
+            PieceName.PAWN,
             playerHasWhitePieces,
             PieceColor.WHITE
         );
         squares[blackPiecesRow][col] = new Pawn(
+            PieceName.PAWN,
             playerHasBlackPieces,
             PieceColor.BLACK
         );
@@ -86,15 +88,15 @@ const createPiece = (
 ): Piece => {
     switch (pieceName) {
         case PieceName.ROOK:
-            return new Rook(player, color);
+            return new Rook(PieceName.ROOK, player, color);
         case PieceName.KNIGHT:
-            return new Knight(player, color);
+            return new Knight(PieceName.KNIGHT, player, color);
         case PieceName.BISHOP:
-            return new Bishop(player, color);
+            return new Bishop(PieceName.BISHOP, player, color);
         case PieceName.QUEEN:
-            return new Queen(player, color);
+            return new Queen(PieceName.QUEEN, player, color);
         case PieceName.KING:
-            return new King(player, color);
+            return new King(PieceName.KING, player, color);
         default:
             throw new Error('Invalid piece name');
     }

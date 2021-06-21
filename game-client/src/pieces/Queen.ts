@@ -1,8 +1,8 @@
-import Piece, { PieceColor, Coordinate } from './Piece';
+import Piece, { PieceColor, Coordinate, PieceName } from './Piece';
 
 export default class Queen extends Piece {
-    constructor(player: number, color: PieceColor) {
-        super(player, color);
+    constructor(name: PieceName, player: number, color: PieceColor) {
+        super(name, player, color);
         this.icon = `assets/images/queen_${this.colorSymbol}.png`;
     }
 

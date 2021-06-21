@@ -1,9 +1,9 @@
-import Piece, { PieceColor, Coordinate } from './Piece';
+import Piece, { PieceColor, Coordinate, PieceName } from './Piece';
 import { isSamePosition } from '../helpers/helper';
 
 export default class King extends Piece {
-    constructor(player: number, color: PieceColor) {
-        super(player, color);
+    constructor(name: PieceName, player: number, color: PieceColor) {
+        super(name, player, color);
         this.icon = `assets/images/king_${this.colorSymbol}.png`;
     }
 
