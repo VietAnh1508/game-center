@@ -43,6 +43,18 @@ const Board = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
                 }
             }
 
+            const xLabel = [PieceColor.WHITE, PieceColor.RANDOM].includes(
+                props.playerSelectedColor
+            )
+                ? String.fromCharCode(j + 97)
+                : String.fromCharCode(104 - j);
+
+            const yLabel = [PieceColor.WHITE, PieceColor.RANDOM].includes(
+                props.playerSelectedColor
+            )
+                ? (8 - i).toString()
+                : (i + 1).toString();
+
             squares.push(
                 <Square
                     key={`${i}${j}`}
@@ -51,6 +63,8 @@ const Board = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
                     isHighlight={isHighlight}
                     isHint={isHint}
                     piece={piece}
+                    xCoordinateLabel={i === 7 ? xLabel : null}
+                    yCoordinateLabel={j === 0 ? yLabel : null}
                 />
             );
         }

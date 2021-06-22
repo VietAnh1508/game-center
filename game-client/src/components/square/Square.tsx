@@ -1,4 +1,10 @@
-import { StyledSquare, ChessPiece, CaptureHint, Hint } from './style';
+import {
+    StyledSquare,
+    ChessPiece,
+    CaptureHint,
+    Hint,
+    CoordinateLabel
+} from './style';
 
 import Piece from '../../pieces/Piece';
 
@@ -8,6 +14,8 @@ interface Props {
     isHighlight: boolean;
     isHint: boolean;
     piece: Piece | null;
+    xCoordinateLabel: string | null;
+    yCoordinateLabel: string | null;
 }
 
 const Square: React.FunctionComponent<Props> = (props) => {
@@ -26,6 +34,16 @@ const Square: React.FunctionComponent<Props> = (props) => {
             )}
             {props.isHint &&
                 (props.piece ? <CaptureHint size={props.size} /> : <Hint />)}
+            {props.xCoordinateLabel && (
+                <CoordinateLabel isShade={props.isShade} isXAxis={true}>
+                    {props.xCoordinateLabel}
+                </CoordinateLabel>
+            )}
+            {props.yCoordinateLabel && (
+                <CoordinateLabel isShade={props.isShade} isXAxis={false}>
+                    {props.yCoordinateLabel}
+                </CoordinateLabel>
+            )}
         </StyledSquare>
     );
 };
