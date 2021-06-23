@@ -13,9 +13,7 @@ export interface TimeCountdown {
     second: number;
 }
 
-interface Props {}
-
-const Game: React.FunctionComponent<Props> = () => {
+const Game: React.FunctionComponent = () => {
     const [boardSize] = useState<number>(560);
     const [squareSize] = useState<number>(boardSize / 8);
     const [squares, setSquares] = useState<(Piece | null)[][]>(() =>
