@@ -3,7 +3,8 @@ import {
     ChessPiece,
     CaptureHint,
     Hint,
-    CoordinateLabel
+    XCoordinateLabel,
+    YCoordinateLabel
 } from './style';
 
 import Piece from '../../pieces/Piece';
@@ -35,14 +36,14 @@ const Square: React.FunctionComponent<Props> = (props) => {
             {props.isHint &&
                 (props.piece ? <CaptureHint size={props.size} /> : <Hint />)}
             {props.xCoordinateLabel && (
-                <CoordinateLabel isShade={props.isShade} isXAxis={true}>
+                <XCoordinateLabel isShade={props.isShade}>
                     {props.xCoordinateLabel}
-                </CoordinateLabel>
+                </XCoordinateLabel>
             )}
             {props.yCoordinateLabel && (
-                <CoordinateLabel isShade={props.isShade} isXAxis={false}>
+                <YCoordinateLabel isShade={props.isShade}>
                     {props.yCoordinateLabel}
-                </CoordinateLabel>
+                </YCoordinateLabel>
             )}
         </StyledSquare>
     );

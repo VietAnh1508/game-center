@@ -60,13 +60,19 @@ export const CaptureHint = styled.div<CaptureHintProps>`
 
 interface CoordinateLabelProps {
     isShade: boolean;
-    isXAxis: boolean;
 }
 
-export const CoordinateLabel = styled.span<CoordinateLabelProps>`
+const CoordinateLabel = styled.span<CoordinateLabelProps>`
     position: absolute;
     color: ${(p) => (p.isShade ? '#eeeed2' : '#769656')};
     font-weight: 600;
-    padding-top: ${(p) => (p.isXAxis ? '45' : '0')}px;
-    padding-left: ${(p) => (p.isXAxis ? '55' : '4')}px;
+`;
+
+export const XCoordinateLabel = styled(CoordinateLabel)`
+    margin-top: 45px;
+    margin-left: 60px;
+`;
+
+export const YCoordinateLabel = styled(CoordinateLabel)`
+    padding-left: 4px;
 `;
