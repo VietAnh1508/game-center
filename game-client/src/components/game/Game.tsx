@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { initialiseChessBoard } from '../../helpers/helper';
 import Piece, { Coordinate, PieceColor, PieceName } from '../../pieces/Piece';
 import Board from '../board/Board';
+import CapturedPieces from '../captured-pieces/CapturedPieces';
 import Clock from '../clock/Clock';
 import GameInfo from '../game-info/GameInfo';
 import PlayerInfo from '../player-info/PlayerInfo';
@@ -32,6 +33,12 @@ const Game: React.FunctionComponent = () => {
     const [playerSelectedColor, setPlayerSelectedColor] = useState<PieceColor>(
         PieceColor.RANDOM
     );
+    const [blackCapturedPieces, setBlackCapturedPieces] = useState<
+        Array<Piece | null>
+    >([]);
+    const [whiteCapturedPieces, setWhiteCapturedPieces] = useState<
+        Array<Piece | null>
+    >([]);
     const [player1Countdown, setPlayer1Coundown] = useState<TimeCountdown>({
         minute: 10,
         second: 0
@@ -196,6 +203,19 @@ const Game: React.FunctionComponent = () => {
                     destination
                 );
 
+                const capturedPiece = squaresCopy[destination.y][destination.x];
+                if (capturedPiece !== null) {
+                    if (capturedPiece.color === PieceColor.BLACK) {
+                        let capturePices = blackCapturedPieces;
+                        capturePices.push(capturedPiece);
+                        setBlackCapturedPieces(capturePices);
+                    } else {
+                        let capturePices = whiteCapturedPieces;
+                        capturePices.push(capturedPiece);
+                        setWhiteCapturedPieces(capturePices);
+                    }
+                }
+
                 squaresCopy[destination.y][destination.x] =
                     squaresCopy[activePieceCoordinate.y][
                         activePieceCoordinate.x
@@ -212,6 +232,21 @@ const Game: React.FunctionComponent = () => {
                         squaresCopy[destination.y][destination.x]?.player === 1
                             ? 1
                             : -1;
+
+                    const capturedPiece =
+                        squaresCopy[destination.y + direction][destination.x];
+                    if (capturedPiece !== null) {
+                        if (capturedPiece.color === PieceColor.BLACK) {
+                            let capturePices = blackCapturedPieces;
+                            capturePices.push(capturedPiece);
+                            setBlackCapturedPieces(capturePices);
+                        } else {
+                            let capturePices = whiteCapturedPieces;
+                            capturePices.push(capturedPiece);
+                            setWhiteCapturedPieces(capturePices);
+                        }
+                    }
+
                     squaresCopy[destination.y + direction][destination.x] =
                         null;
                 }
@@ -317,6 +352,7 @@ const Game: React.FunctionComponent = () => {
     };
 
     const switchTimerCountdown = () => {
+        // TODO: fix this, every time a timer ticking, it re-render all the board!!!
         if (turn === PieceColor.BLACK) {
             setIsCountdown2Pause(true);
             setIsCountdown1Pause(false);
@@ -364,6 +400,18 @@ const Game: React.FunctionComponent = () => {
                     username='user 2'
                 />
                 <Clock player={2} countdown={player2Countdown} />
+                <CapturedPieces
+                    color={
+                        playerSelectedColor === PieceColor.WHITE
+                            ? PieceColor.WHITE
+                            : PieceColor.BLACK
+                    }
+                    capturedPieces={
+                        playerSelectedColor === PieceColor.WHITE
+                            ? whiteCapturedPieces
+                            : blackCapturedPieces
+                    }
+                />
             </PlayerSection>
             <Board
                 ref={chessBoardEl}
@@ -383,6 +431,18 @@ const Game: React.FunctionComponent = () => {
                     username='user 1'
                 />
                 <Clock player={1} countdown={player1Countdown} />
+                <CapturedPieces
+                    color={
+                        playerSelectedColor === PieceColor.WHITE
+                            ? PieceColor.BLACK
+                            : PieceColor.WHITE
+                    }
+                    capturedPieces={
+                        playerSelectedColor === PieceColor.WHITE
+                            ? blackCapturedPieces
+                            : whiteCapturedPieces
+                    }
+                />
             </PlayerSection>
             <GameInfo
                 selectedColor={playerSelectedColor}
