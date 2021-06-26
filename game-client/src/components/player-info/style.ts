@@ -17,4 +17,5 @@ export const Username = styled.div`
     grid-row: 1 / 2;
     color: white;
     font-weight: bold;
+    align-self: center;
 `;

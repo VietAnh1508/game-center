@@ -18,4 +18,5 @@ export const PlayerSection = styled.div`
     grid-template-columns: 40px auto 140px;
     grid-template-rows: 20px 20px;
     column-gap: 5px;
+    row-gap: 3px;
 `;
