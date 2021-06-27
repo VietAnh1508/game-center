@@ -5,7 +5,7 @@ export default class Pawn extends Piece {
     enPassantCapture: boolean;
 
     constructor(name: PieceName, player: number, color: PieceColor) {
-        super(name, player, color);
+        super(name, 1, player, color);
         this.icon = `assets/images/pawn_${this.colorSymbol}.png`;
         this.direction = player === 1 ? -1 : 1;
         this.enPassantCapture = false;

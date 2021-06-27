@@ -2,7 +2,7 @@ import Piece, { PieceColor, Coordinate, PieceName } from './Piece';
 
 export default class Bishop extends Piece {
     constructor(name: PieceName, player: number, color: PieceColor) {
-        super(name, player, color);
+        super(name, 3, player, color);
         this.icon = `assets/images/bishop_${this.colorSymbol}.png`;
     }
 

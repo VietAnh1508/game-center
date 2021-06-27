@@ -2,7 +2,7 @@ import Piece, { PieceColor, Coordinate, PieceName } from './Piece';
 
 export default class Rook extends Piece {
     constructor(name: PieceName, player: number, color: PieceColor) {
-        super(name, player, color);
+        super(name, 5, player, color);
         this.icon = `assets/images/rook_${this.colorSymbol}.png`;
     }
 

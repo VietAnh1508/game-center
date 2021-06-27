@@ -3,7 +3,7 @@ import { isSamePosition } from '../helpers/helper';
 
 export default class King extends Piece {
     constructor(name: PieceName, player: number, color: PieceColor) {
-        super(name, player, color);
+        super(name, Infinity, player, color);
         this.icon = `assets/images/king_${this.colorSymbol}.png`;
     }
 

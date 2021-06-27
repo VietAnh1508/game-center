@@ -20,6 +20,7 @@ export enum PieceColor {
 
 export interface PieceInterface {
     name: PieceName;
+    value: number;
     player: number;
     color: PieceColor;
     icon: string;
@@ -43,13 +44,20 @@ export interface PieceInterface {
 
 export default abstract class Piece implements PieceInterface {
     name: PieceName;
+    value: number;
     player: number;
     color: PieceColor;
     colorSymbol: string;
     icon: string;
 
-    constructor(name: PieceName, player: number, color: PieceColor) {
+    constructor(
+        name: PieceName,
+        value: number,
+        player: number,
+        color: PieceColor
+    ) {
         this.name = name;
+        this.value = value;
         this.player = player;
         this.color = color;
         this.colorSymbol = color === PieceColor.WHITE ? 'w' : 'b';

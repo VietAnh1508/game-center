@@ -2,7 +2,7 @@ import Piece, { PieceColor, Coordinate, PieceName } from './Piece';
 
 export default class Knight extends Piece {
     constructor(name: PieceName, player: number, color: PieceColor) {
-        super(name, player, color);
+        super(name, 3, player, color);
         this.icon = `assets/images/knight_${this.colorSymbol}.png`;
     }
 
