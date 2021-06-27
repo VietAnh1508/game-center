@@ -4,7 +4,6 @@ export const Panel = styled.div`
     grid-column: 2 / 3;
     grid-row: 2;
     width: 100%;
-    display: block;
 `;
 
 interface CapturedPieceProps {
@@ -22,4 +21,10 @@ export const CapturedPiece = styled.span<CapturedPieceProps>`
     width: ${(p) => p.width}px;
     height: ${(p) => p.height}px;
     margin-right: 2px;
+`;
+
+export const CapturedPieceScore = styled.span`
+    display: inline-block;
+    color: hsla(0, 0%, 100%, 0.4);
+    margin-left: 0.2rem;
 `;

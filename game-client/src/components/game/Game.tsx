@@ -39,6 +39,8 @@ const Game: React.FunctionComponent = () => {
     const [whiteCapturedPieces, setWhiteCapturedPieces] = useState<
         Array<Piece>
     >([]);
+    const [whiteScore, setWhiteScore] = useState<number>(0);
+    const [blackScore, setBlackScore] = useState<number>(0);
     const [player1Countdown, setPlayer1Coundown] = useState<TimeCountdown>({
         minute: 10,
         second: 0
@@ -266,6 +268,8 @@ const Game: React.FunctionComponent = () => {
                 );
 
                 setHintSquares([]);
+
+                calculateScore();
             } else {
                 activePiece.style.position = 'relative';
                 activePiece.style.top = '0px';
@@ -392,6 +396,23 @@ const Game: React.FunctionComponent = () => {
         }
     };
 
+    const calculateScore = (): void => {
+        let whiteScore = 0;
+        for (let piece of blackCapturedPieces) {
+            whiteScore += piece.value;
+        }
+
+        let blackScore = 0;
+        for (let piece of whiteCapturedPieces) {
+            blackScore += piece.value;
+        }
+
+        const diff = Math.abs(whiteScore - blackScore);
+
+        setWhiteScore(whiteScore > blackScore ? diff : 0);
+        setBlackScore(blackScore > whiteScore ? diff : 0);
+    };
+
     return (
         <Container>
             <PlayerSection>
@@ -410,6 +431,11 @@ const Game: React.FunctionComponent = () => {
                         playerSelectedColor === PieceColor.WHITE
                             ? whiteCapturedPieces
                             : blackCapturedPieces
+                    }
+                    capturedPiecesScore={
+                        playerSelectedColor === PieceColor.WHITE
+                            ? blackScore
+                            : whiteScore
                     }
                 />
             </PlayerSection>
@@ -441,6 +467,11 @@ const Game: React.FunctionComponent = () => {
                         playerSelectedColor === PieceColor.WHITE
                             ? blackCapturedPieces
                             : whiteCapturedPieces
+                    }
+                    capturedPiecesScore={
+                        playerSelectedColor === PieceColor.WHITE
+                            ? whiteScore
+                            : blackScore
                     }
                 />
             </PlayerSection>

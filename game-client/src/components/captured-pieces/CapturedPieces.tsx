@@ -1,10 +1,5 @@
 import Piece, { PieceColor } from '../../pieces/Piece';
-import { Panel, CapturedPiece } from './style';
-
-export interface Props {
-    color: PieceColor;
-    capturedPieces: Array<Piece | null>;
-}
+import { Panel, CapturedPiece, CapturedPieceScore } from './style';
 
 /**
  * Piece name by index (define by PieceName enum in Piece.tsx)
@@ -123,6 +118,12 @@ const blackPieces: any = {
     }
 };
 
+export interface Props {
+    color: PieceColor;
+    capturedPieces: Array<Piece>;
+    capturedPiecesScore: number;
+}
+
 const CapturedPieces: React.FunctionComponent<Props> = (props) => {
     let piecesCount: number[] = [0, 0, 0, 0, 0];
     for (let piece of props.capturedPieces) {
@@ -152,6 +153,11 @@ const CapturedPieces: React.FunctionComponent<Props> = (props) => {
                         />
                     );
                 })}
+            {props.capturedPiecesScore !== 0 && (
+                <CapturedPieceScore>
+                    +{props.capturedPiecesScore}
+                </CapturedPieceScore>
+            )}
         </Panel>
     );
 };
