@@ -66,6 +66,7 @@ const CoordinateLabel = styled.span<CoordinateLabelProps>`
     position: absolute;
     color: ${(p) => (p.isShade ? '#eeeed2' : '#769656')};
     font-weight: 600;
+    user-select: none;
 `;
 
 export const XCoordinateLabel = styled(CoordinateLabel)`
