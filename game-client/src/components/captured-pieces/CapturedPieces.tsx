@@ -126,7 +126,7 @@ const blackPieces: any = {
 const CapturedPieces: React.FunctionComponent<Props> = (props) => {
     let piecesCount: number[] = [0, 0, 0, 0, 0];
     for (let piece of props.capturedPieces) {
-        piecesCount[piece!.name]++;
+        piecesCount[piece.name]++;
     }
 
     return (

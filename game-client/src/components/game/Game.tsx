@@ -34,10 +34,10 @@ const Game: React.FunctionComponent = () => {
         PieceColor.RANDOM
     );
     const [blackCapturedPieces, setBlackCapturedPieces] = useState<
-        Array<Piece | null>
+        Array<Piece>
     >([]);
     const [whiteCapturedPieces, setWhiteCapturedPieces] = useState<
-        Array<Piece | null>
+        Array<Piece>
     >([]);
     const [player1Countdown, setPlayer1Coundown] = useState<TimeCountdown>({
         minute: 10,
