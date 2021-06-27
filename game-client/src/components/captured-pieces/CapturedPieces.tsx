@@ -9,9 +9,9 @@ export interface Props {
 /**
  * Piece name by index (define by PieceName enum in Piece.tsx)
  * 0: PAWN
- * 1: ROOK
- * 2: KNIGHT
- * 3: BISHOP
+ * 1: KNIGHT
+ * 2: BISHOP
+ * 3: ROOK
  * 4: QUEEN
  */
 
@@ -73,46 +73,46 @@ const blackPieces: any = {
         height: 16
     },
     '1-1': {
-        // 1 rook
-        x: -121,
-        y: -444,
-        width: 15,
-        height: 17
-    },
-    '1-2': {
-        // 2 rooks
-        x: -121,
-        y: -419,
-        width: 22,
-        height: 17
-    },
-    '2-1': {
         // 1 knight
         x: -95,
         y: -443,
         width: 16,
         height: 18
     },
-    '2-2': {
+    '1-2': {
         // 2 knights
         x: -95,
         y: -418,
         width: 23,
         height: 18
     },
-    '3-1': {
+    '2-1': {
         // 1 bishop
         x: -68,
         y: -443,
         width: 14,
         height: 18
     },
-    '3-2': {
+    '2-2': {
         // 2 bishops
         x: -68,
         y: -418,
         width: 22,
         height: 18
+    },
+    '3-1': {
+        // 1 rook
+        x: -121,
+        y: -444,
+        width: 15,
+        height: 17
+    },
+    '3-2': {
+        // 2 rooks
+        x: -121,
+        y: -419,
+        width: 22,
+        height: 17
     },
     '4-1': {
         // queen

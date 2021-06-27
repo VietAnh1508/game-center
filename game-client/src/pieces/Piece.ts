@@ -5,9 +5,9 @@ export interface Coordinate {
 
 export enum PieceName {
     PAWN,
-    ROOK,
     KNIGHT,
     BISHOP,
+    ROOK,
     QUEEN,
     KING
 }
