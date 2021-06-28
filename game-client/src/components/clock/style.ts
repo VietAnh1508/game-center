@@ -30,9 +30,19 @@ export const ClockIcon = styled.div<ClockIconProps>`
     opacity: ${(p) => (p.hide ? '0' : '1')};
 `;
 
-export const svgStyle = {
-    transform: 'rotate(16830deg)'
-};
+interface SvgClockAttrsProps {
+    direction: number;
+}
+
+export const SvgClock = styled.svg.attrs<SvgClockAttrsProps>((props) => ({
+    xmlns: 'http://www.w3.org/2000/svg',
+    width: 20,
+    height: 20,
+    viewBox: '0 0 20 20',
+    style: {
+        transform: `rotate(${props.direction}deg)`
+    }
+}))``;
 
 export const Time = styled.span`
     text-align: center;
