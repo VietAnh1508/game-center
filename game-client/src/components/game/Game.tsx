@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { initialiseChessBoard } from '../../helpers/helper';
+import useInterval from '../../custom-hooks/useInterval';
+
 import Piece, { Coordinate, PieceColor, PieceName } from '../../pieces/Piece';
 import Board from '../board/Board';
-import CapturedPieces from '../captured-pieces/CapturedPieces';
-import Clock from '../clock/Clock';
 import GameInfo from '../game-info/GameInfo';
 import PlayerInfo from '../player-info/PlayerInfo';
+import Clock from '../clock/Clock';
+import CapturedPieces from '../captured-pieces/CapturedPieces';
 
 import { Container, PlayerSection } from './stlye';
 
@@ -41,48 +43,72 @@ const Game: React.FunctionComponent = () => {
     >([]);
     const [whiteScore, setWhiteScore] = useState<number>(0);
     const [blackScore, setBlackScore] = useState<number>(0);
+    const [isGamePlaying, setIsGamePlaying] = useState<boolean>(false);
     const [player1Countdown, setPlayer1Coundown] = useState<TimeCountdown>({
-        minute: 10,
+        minute: 1,
         second: 0
     });
-    const [isCountdown1Pause, setIsCountdown1Pause] = useState<boolean>(false);
     const [player2Countdown, setPlayer2Coundown] = useState<TimeCountdown>({
-        minute: 10,
+        minute: 1,
         second: 0
     });
-    const [isCountdown2Pause, setIsCountdown2Pause] = useState<boolean>(false);
-    let countDown1Id: NodeJS.Timeout;
-    let countDown2Id: NodeJS.Timeout;
+    const [isCountdown1Pause, setIsCountdown1Pause] = useState<boolean>(true);
+    const [isCountdown2Pause, setIsCountdown2Pause] = useState<boolean>(true);
 
     let chessBoardEl = useRef<HTMLDivElement>(null);
 
+    useInterval(
+        () => {
+            if (turn === PieceColor.WHITE) {
+                setPlayer1Coundown((time) => countdown(time));
+            }
+        },
+        isGamePlaying ? 1000 : null
+    );
+
+    useInterval(
+        () => {
+            if (turn === PieceColor.BLACK) {
+                setPlayer2Coundown((time) => countdown(time));
+            }
+        },
+        isGamePlaying ? 1000 : null
+    );
+
+    const countdown = (time: TimeCountdown): TimeCountdown => {
+        const newSec = time.second === 0 ? 59 : time.second - 1;
+        const newMin = newSec === 59 ? time.minute - 1 : time.minute;
+
+        return {
+            minute: newMin,
+            second: newSec
+        };
+    };
+
     useEffect(() => {
+        // TODO: fix base on player's selected color
         if (turn === PieceColor.WHITE) {
-            return () => clearInterval(countDown1Id);
+            setIsCountdown1Pause(false);
+            setIsCountdown2Pause(true);
+        } else {
+            setIsCountdown1Pause(true);
+            setIsCountdown2Pause(false);
         }
-
-        if (turn === PieceColor.BLACK) {
-            return () => clearInterval(countDown2Id);
-        }
-    }, []);
+    }, [turn]);
 
     useEffect(() => {
         if (
-            turn === PieceColor.WHITE &&
-            player1Countdown.minute === 0 &&
-            player1Countdown.second === 0
+            (player1Countdown.minute === 0 && player1Countdown.second === 0) ||
+            (player2Countdown.minute === 0 && player2Countdown.second === 0)
         ) {
-            clearInterval(countDown1Id);
+            setIsGamePlaying(false);
         }
-
-        if (
-            turn === PieceColor.BLACK &&
-            player2Countdown.minute === 0 &&
-            player2Countdown.second === 0
-        ) {
-            clearInterval(countDown2Id);
-        }
-    }, [player1Countdown, player2Countdown]);
+    }, [
+        player1Countdown.minute,
+        player1Countdown.second,
+        player2Countdown.minute,
+        player2Countdown.second
+    ]);
 
     const grabPiece = (e: React.MouseEvent): void => {
         setIsMouseDown(true);
@@ -259,8 +285,6 @@ const Game: React.FunctionComponent = () => {
                 highlighted.push({ x: destination.x, y: destination.y });
                 setHighlightedSquares(highlighted);
 
-                switchTimerCountdown();
-
                 setTurn(
                     turn === PieceColor.WHITE
                         ? PieceColor.BLACK
@@ -341,59 +365,7 @@ const Game: React.FunctionComponent = () => {
     };
 
     const handleStartGame = (): void => {
-        // player 1 is white
-        countDown1Id = setInterval(() => {
-            setPlayer1Coundown((time) => {
-                const newSec = time.second === 0 ? 59 : time.second - 1;
-                const newMin = newSec === 59 ? time.minute - 1 : time.minute;
-
-                return {
-                    minute: newMin,
-                    second: newSec
-                };
-            });
-        }, 1000);
-    };
-
-    const switchTimerCountdown = () => {
-        // TODO: fix this, every time a timer ticking, it re-render all the board!!!
-        if (turn === PieceColor.BLACK) {
-            setIsCountdown2Pause(true);
-            setIsCountdown1Pause(false);
-
-            countDown1Id = setInterval(() => {
-                if (!isCountdown1Pause) {
-                    setPlayer1Coundown((time) => {
-                        const newSec = time.second === 0 ? 59 : time.second - 1;
-                        const newMin =
-                            newSec === 59 ? time.minute - 1 : time.minute;
-
-                        return {
-                            minute: newMin,
-                            second: newSec
-                        };
-                    });
-                }
-            }, 1000);
-        } else {
-            setIsCountdown1Pause(true);
-            setIsCountdown2Pause(false);
-
-            countDown2Id = setInterval(() => {
-                if (!isCountdown2Pause) {
-                    setPlayer2Coundown((time) => {
-                        const newSec = time.second === 0 ? 59 : time.second - 1;
-                        const newMin =
-                            newSec === 59 ? time.minute - 1 : time.minute;
-
-                        return {
-                            minute: newMin,
-                            second: newSec
-                        };
-                    });
-                }
-            }, 1000);
-        }
+        setIsGamePlaying(true);
     };
 
     const calculateScore = (): void => {
@@ -420,7 +392,11 @@ const Game: React.FunctionComponent = () => {
                     userAvatar='https://betacssjs.chesscomfiles.com/bundles/web/images/user-image.svg'
                     username='user 2'
                 />
-                <Clock player={2} countdown={player2Countdown} />
+                <Clock
+                    player={2}
+                    countdown={player2Countdown}
+                    isPause={isCountdown2Pause}
+                />
                 <CapturedPieces
                     color={
                         playerSelectedColor === PieceColor.WHITE
@@ -456,7 +432,11 @@ const Game: React.FunctionComponent = () => {
                     userAvatar='https://betacssjs.chesscomfiles.com/bundles/web/images/user-image.svg'
                     username='user 1'
                 />
-                <Clock player={1} countdown={player1Countdown} />
+                <Clock
+                    player={1}
+                    countdown={player1Countdown}
+                    isPause={isCountdown1Pause}
+                />
                 <CapturedPieces
                     color={
                         playerSelectedColor === PieceColor.WHITE

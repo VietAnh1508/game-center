@@ -5,12 +5,16 @@ import { StyledClock, ClockIcon, svgStyle, Time } from './style';
 interface Props {
     player: number;
     countdown: TimeCountdown;
+    isPause: boolean;
 }
 
 const Clock: React.FunctionComponent<Props> = (props) => {
     return (
-        <StyledClock>
-            <ClockIcon>
+        <StyledClock
+            backgroundColor={props.isPause ? '#2f2c27' : '#fff'}
+            textColor={props.isPause ? '#999896' : '#000'}
+        >
+            <ClockIcon hide={props.isPause}>
                 <svg
                     xmlns='http://www.w3.org/2000/svg'
                     width='20'
