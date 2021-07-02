@@ -59,7 +59,12 @@ const Game: React.FunctionComponent = () => {
 
     useInterval(
         () => {
-            if (turn === PieceColor.WHITE) {
+            if (
+                (playerSelectedColor === PieceColor.WHITE &&
+                    turn === PieceColor.WHITE) ||
+                (playerSelectedColor === PieceColor.BLACK &&
+                    turn === PieceColor.BLACK)
+            ) {
                 setPlayer1Coundown((time) => countdown(time));
             }
         },
@@ -68,7 +73,12 @@ const Game: React.FunctionComponent = () => {
 
     useInterval(
         () => {
-            if (turn === PieceColor.BLACK) {
+            if (
+                (playerSelectedColor === PieceColor.WHITE &&
+                    turn === PieceColor.BLACK) ||
+                (playerSelectedColor === PieceColor.BLACK &&
+                    turn === PieceColor.WHITE)
+            ) {
                 setPlayer2Coundown((time) => countdown(time));
             }
         },
@@ -86,15 +96,19 @@ const Game: React.FunctionComponent = () => {
     };
 
     useEffect(() => {
-        // TODO: fix base on player's selected color
-        if (turn === PieceColor.WHITE) {
+        if (
+            (playerSelectedColor === PieceColor.WHITE &&
+                turn === PieceColor.WHITE) ||
+            (playerSelectedColor === PieceColor.BLACK &&
+                turn === PieceColor.BLACK)
+        ) {
             setIsCountdown1Pause(false);
             setIsCountdown2Pause(true);
         } else {
             setIsCountdown1Pause(true);
             setIsCountdown2Pause(false);
         }
-    }, [turn]);
+    }, [turn, playerSelectedColor]);
 
     useEffect(() => {
         if (
