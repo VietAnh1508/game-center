@@ -393,7 +393,11 @@ const Game: React.FunctionComponent = () => {
                     username='user 2'
                 />
                 <Clock
-                    player={2}
+                    playerSelectedColor={
+                        playerSelectedColor === PieceColor.WHITE
+                            ? PieceColor.BLACK
+                            : PieceColor.WHITE
+                    }
                     countdown={player2Countdown}
                     isPause={isCountdown2Pause}
                 />
@@ -433,7 +437,7 @@ const Game: React.FunctionComponent = () => {
                     username='user 1'
                 />
                 <Clock
-                    player={1}
+                    playerSelectedColor={playerSelectedColor}
                     countdown={player1Countdown}
                     isPause={isCountdown1Pause}
                 />
