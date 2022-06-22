@@ -12,7 +12,10 @@ import {
 
 interface Props {
     selectedColor: PieceColor;
+    timeLimits: Array<number>;
+    selectedTime: number;
     handleSelectPieceColor: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleSelectTimeLimit: (e: React.ChangeEvent<HTMLSelectElement>) => void;
     startGame: (e: React.MouseEvent) => void;
 }
 
@@ -54,10 +57,15 @@ const GameInfo: React.FunctionComponent<Props> = (props) => {
             </ModeSelectionBlock>
             <SelectTimeBox>
                 <label htmlFor='countdown'>Select time limit</label>
-                <select name='time' id='countdown'>
-                    <option value='3m'>3 min</option>
-                    <option value='5m'>5 min</option>
-                    <option value='10m'>10 min</option>
+                <select
+                    name='time'
+                    id='countdown'
+                    value={props.selectedTime}
+                    onChange={props.handleSelectTimeLimit}
+                >
+                    {props.timeLimits.map((time) => (
+                        <option key={time} value={time}>{`${time} min`}</option>
+                    ))}
                 </select>
             </SelectTimeBox>
             <Footer>

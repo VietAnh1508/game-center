@@ -32,8 +32,11 @@ const Game: React.FunctionComponent = () => {
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
     const [hintSquares, setHintSquares] = useState<Array<Coordinate>>([]);
     const [enPassant, setEnPassant] = useState<Coordinate | null>(null);
-    const [playerSelectedColor, setPlayerSelectedColor] = useState<PieceColor>(
+    const [selectedColor, setSelectedColor] = useState<PieceColor>(
         PieceColor.RANDOM
+    );
+    const [playerSelectedColor, setPlayerSelectedColor] = useState<PieceColor>(
+        PieceColor.WHITE
     );
     const [blackCapturedPieces, setBlackCapturedPieces] = useState<
         Array<Piece>
@@ -44,12 +47,16 @@ const Game: React.FunctionComponent = () => {
     const [whiteScore, setWhiteScore] = useState<number>(0);
     const [blackScore, setBlackScore] = useState<number>(0);
     const [isGamePlaying, setIsGamePlaying] = useState<boolean>(false);
+    const [timeLimits, setTimeLimits] = useState<Array<number>>([3, 5, 10]);
+    const [selectedTimeLimit, setSelectedTimeLimit] = useState<number>(
+        timeLimits[0]
+    );
     const [player1Countdown, setPlayer1Coundown] = useState<TimeCountdown>({
-        minute: 1,
+        minute: selectedTimeLimit,
         second: 0
     });
     const [player2Countdown, setPlayer2Coundown] = useState<TimeCountdown>({
-        minute: 1,
+        minute: selectedTimeLimit,
         second: 0
     });
     const [isCountdown1Pause, setIsCountdown1Pause] = useState<boolean>(true);
@@ -125,6 +132,10 @@ const Game: React.FunctionComponent = () => {
     ]);
 
     const grabPiece = (e: React.MouseEvent): void => {
+        if (!isGamePlaying) {
+            return;
+        }
+
         setIsMouseDown(true);
 
         const element = e.target as HTMLElement;
@@ -367,15 +378,35 @@ const Game: React.FunctionComponent = () => {
     };
 
     const onColorSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (isGamePlaying) {
+            return;
+        }
+
         let selectedColor =
             PieceColor[e.target.value as keyof typeof PieceColor];
-        setPlayerSelectedColor(selectedColor);
+        setSelectedColor(selectedColor);
 
         if (selectedColor === PieceColor.RANDOM) {
-            // TODO: fix this
-            selectedColor = PieceColor.WHITE;
+            selectedColor = Math.floor(Math.random() * 2);
         }
+
+        setPlayerSelectedColor(selectedColor);
         setSquares(initialiseChessBoard(selectedColor));
+    };
+
+    const onTimeLimitSelected = (
+        e: React.ChangeEvent<HTMLSelectElement>
+    ): void => {
+        const timeLimit = Number(e.target.value);
+        setSelectedTimeLimit(timeLimit);
+        setPlayer1Coundown({
+            minute: timeLimit,
+            second: 0
+        });
+        setPlayer2Coundown({
+            minute: timeLimit,
+            second: 0
+        });
     };
 
     const handleStartGame = (): void => {
@@ -474,7 +505,10 @@ const Game: React.FunctionComponent = () => {
                 />
             </PlayerSection>
             <GameInfo
-                selectedColor={playerSelectedColor}
+                selectedColor={selectedColor}
+                timeLimits={timeLimits}
+                selectedTime={selectedTimeLimit}
+                handleSelectTimeLimit={onTimeLimitSelected}
                 handleSelectPieceColor={onColorSelected}
                 startGame={handleStartGame}
             />
