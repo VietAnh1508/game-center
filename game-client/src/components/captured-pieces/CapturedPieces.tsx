@@ -10,7 +10,7 @@ import { Panel, CapturedPiece, CapturedPieceScore } from './style';
  * 4: QUEEN
  */
 
-const blackPieces: any = {
+const pieceList: any = {
     '0-1': {
         // 1 pawn
         x: -1,
@@ -135,7 +135,7 @@ const CapturedPieces: React.FunctionComponent<Props> = (props) => {
             {piecesCount
                 .map((el, index) => `${index}-${el}`)
                 .map((piece) => {
-                    const pieceInfo: any = blackPieces[piece];
+                    const pieceInfo: any = pieceList[piece];
                     if (!pieceInfo) {
                         return null;
                     }
