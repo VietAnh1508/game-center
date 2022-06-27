@@ -1,4 +1,5 @@
-import Piece, { PieceColor, Coordinate, PieceName } from './Piece';
+import { Coordinate } from '../@types/coordinate';
+import Piece, { PieceColor, PieceName } from './Piece';
 
 export default class Bishop extends Piece {
     constructor(name: PieceName, player: number, color: PieceColor) {

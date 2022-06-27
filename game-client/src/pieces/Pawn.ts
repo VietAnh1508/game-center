@@ -1,4 +1,5 @@
-import Piece, { PieceColor, Coordinate, PieceName } from './Piece';
+import { Coordinate } from '../@types/coordinate';
+import Piece, { PieceColor, PieceName } from './Piece';
 
 export default class Pawn extends Piece {
     direction: number;

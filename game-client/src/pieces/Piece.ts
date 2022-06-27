@@ -1,7 +1,4 @@
-export interface Coordinate {
-    x: number;
-    y: number;
-}
+import { Coordinate } from '../@types/coordinate';
 
 export enum PieceName {
     PAWN,
