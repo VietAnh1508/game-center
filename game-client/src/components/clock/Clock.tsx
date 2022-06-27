@@ -1,11 +1,12 @@
 import { useRef, useEffect } from 'react';
-import { TimeCountdown } from '../game/Game';
+
+import { TimeCountdown } from '../../@types/game';
 import { PieceColor } from '../../pieces/Piece';
 
 import { StyledClock, ClockIcon, SvgClock, Time } from './style';
 
 interface Props {
-    playerSelectedColor: PieceColor;
+    color: PieceColor;
     countdown: TimeCountdown;
     isPause: boolean;
 }
@@ -21,15 +22,12 @@ const Clock: React.FunctionComponent<Props> = (props) => {
         }
     }, [props.countdown.second]);
 
-    const textColor =
-        props.playerSelectedColor === PieceColor.WHITE ? '#000' : '#999896';
+    const textColor = props.color === PieceColor.WHITE ? '#000' : '#999896';
 
     return (
         <StyledClock
             backgroundColor={
-                props.playerSelectedColor === PieceColor.WHITE
-                    ? '#fff'
-                    : '#2f2c27'
+                props.color === PieceColor.WHITE ? '#fff' : '#2f2c27'
             }
             textColor={textColor}
         >

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { GameContext } from '../../context/game-context';
 import { PieceColor } from '../../pieces/Piece';
 import {
     Panel,
@@ -11,21 +12,20 @@ import {
 } from './style';
 
 interface Props {
-    selectedColor: PieceColor;
-    timeLimits: Array<number>;
-    selectedTime: number;
     handleSelectPieceColor: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleSelectTimeLimit: (e: React.ChangeEvent<HTMLSelectElement>) => void;
     startGame: (e: React.MouseEvent) => void;
 }
 
 const GameInfo: React.FunctionComponent<Props> = (props) => {
+    const [state] = useContext(GameContext);
+
     return (
         <Panel>
             <span>I play as</span>
             <ModeSelectionBlock>
                 <ModeSelectionBox
-                    selectedColor={props.selectedColor}
+                    selectedColor={state.selectedColor}
                     pieceColor={PieceColor.WHITE}
                 >
                     <ModeSelectionRadio
@@ -35,7 +35,7 @@ const GameInfo: React.FunctionComponent<Props> = (props) => {
                     />
                 </ModeSelectionBox>
                 <ModeSelectionBox
-                    selectedColor={props.selectedColor}
+                    selectedColor={state.selectedColor}
                     pieceColor={PieceColor.RANDOM}
                 >
                     <ModeSelectionRadio
@@ -45,7 +45,7 @@ const GameInfo: React.FunctionComponent<Props> = (props) => {
                     />
                 </ModeSelectionBox>
                 <ModeSelectionBox
-                    selectedColor={props.selectedColor}
+                    selectedColor={state.selectedColor}
                     pieceColor={PieceColor.BLACK}
                 >
                     <ModeSelectionRadio
@@ -60,10 +60,10 @@ const GameInfo: React.FunctionComponent<Props> = (props) => {
                 <select
                     name='time'
                     id='countdown'
-                    value={props.selectedTime}
+                    value={state.selectedTimeLimit}
                     onChange={props.handleSelectTimeLimit}
                 >
-                    {props.timeLimits.map((time) => (
+                    {state.timeLimits.map((time: number) => (
                         <option key={time} value={time}>{`${time} min`}</option>
                     ))}
                 </select>

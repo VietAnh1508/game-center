@@ -1,8 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { initialiseChessBoard } from '../../helpers/helper';
+import React, { useRef, useEffect, useContext } from 'react';
 import useInterval from '../../custom-hooks/useInterval';
 
-import Piece, { Coordinate, PieceColor, PieceName } from '../../pieces/Piece';
+import { GameContext } from '../../context/game-context';
+
+import { initialiseChessBoard } from '../../helpers/helper';
+import { TimeCountdown } from '../../@types/game';
+import { Coordinate } from '../../@types/coordinate';
+
+import Piece, { PieceColor, PieceName } from '../../pieces/Piece';
 import Board from '../board/Board';
 import GameInfo from '../game-info/GameInfo';
 import PlayerInfo from '../player-info/PlayerInfo';
@@ -11,85 +16,53 @@ import CapturedPieces from '../captured-pieces/CapturedPieces';
 
 import { Container, PlayerSection } from './stlye';
 
-export interface TimeCountdown {
-    minute: number;
-    second: number;
-}
-
 const Game: React.FunctionComponent = () => {
-    const [boardSize] = useState<number>(560);
-    const [squareSize] = useState<number>(boardSize / 8);
-    const [squares, setSquares] = useState<(Piece | null)[][]>(() =>
-        initialiseChessBoard(PieceColor.WHITE)
-    );
-    const [activePieceCoordinate, setActivePieceCoordinate] =
-        useState<Coordinate | null>(null);
-    const [activePiece, setActivePiece] = useState<HTMLElement | null>(null);
-    const [highlightedSquares, setHighlightedSquares] = useState<
-        Array<Coordinate>
-    >([]);
-    const [turn, setTurn] = useState<PieceColor>(PieceColor.WHITE);
-    const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
-    const [hintSquares, setHintSquares] = useState<Array<Coordinate>>([]);
-    const [enPassant, setEnPassant] = useState<Coordinate | null>(null);
-    const [selectedColor, setSelectedColor] = useState<PieceColor>(
-        PieceColor.RANDOM
-    );
-    const [playerSelectedColor, setPlayerSelectedColor] = useState<PieceColor>(
-        PieceColor.WHITE
-    );
-    const [blackCapturedPieces, setBlackCapturedPieces] = useState<
-        Array<Piece>
-    >([]);
-    const [whiteCapturedPieces, setWhiteCapturedPieces] = useState<
-        Array<Piece>
-    >([]);
-    const [whiteScore, setWhiteScore] = useState<number>(0);
-    const [blackScore, setBlackScore] = useState<number>(0);
-    const [isGamePlaying, setIsGamePlaying] = useState<boolean>(false);
-    const [timeLimits, setTimeLimits] = useState<Array<number>>([3, 5, 10]);
-    const [selectedTimeLimit, setSelectedTimeLimit] = useState<number>(
-        timeLimits[0]
-    );
-    const [player1Countdown, setPlayer1Coundown] = useState<TimeCountdown>({
-        minute: selectedTimeLimit,
-        second: 0
-    });
-    const [player2Countdown, setPlayer2Coundown] = useState<TimeCountdown>({
-        minute: selectedTimeLimit,
-        second: 0
-    });
-    const [isCountdown1Pause, setIsCountdown1Pause] = useState<boolean>(true);
-    const [isCountdown2Pause, setIsCountdown2Pause] = useState<boolean>(true);
+    const [state, dispatch] = useContext(GameContext);
 
     let chessBoardEl = useRef<HTMLDivElement>(null);
 
     useInterval(
         () => {
             if (
-                (playerSelectedColor === PieceColor.WHITE &&
-                    turn === PieceColor.WHITE) ||
-                (playerSelectedColor === PieceColor.BLACK &&
-                    turn === PieceColor.BLACK)
+                (state.playerSelectedColor === PieceColor.WHITE &&
+                    state.turn === PieceColor.WHITE) ||
+                (state.playerSelectedColor === PieceColor.BLACK &&
+                    state.turn === PieceColor.BLACK)
             ) {
-                setPlayer1Coundown((time) => countdown(time));
+                const newTime = countdown(state.player1Countdown);
+                dispatch({
+                    type: 'SET_PLAYER_COUNT_DOWN',
+                    payload: {
+                        player: 1,
+                        minute: newTime.minute,
+                        second: newTime.second
+                    }
+                });
             }
         },
-        isGamePlaying ? 1000 : null
+        state.isGamePlaying ? 1000 : null
     );
 
     useInterval(
         () => {
             if (
-                (playerSelectedColor === PieceColor.WHITE &&
-                    turn === PieceColor.BLACK) ||
-                (playerSelectedColor === PieceColor.BLACK &&
-                    turn === PieceColor.WHITE)
+                (state.playerSelectedColor === PieceColor.WHITE &&
+                    state.turn === PieceColor.BLACK) ||
+                (state.playerSelectedColor === PieceColor.BLACK &&
+                    state.turn === PieceColor.WHITE)
             ) {
-                setPlayer2Coundown((time) => countdown(time));
+                const newTime = countdown(state.player2Countdown);
+                dispatch({
+                    type: 'SET_PLAYER_COUNT_DOWN',
+                    payload: {
+                        player: 2,
+                        minute: newTime.minute,
+                        second: newTime.second
+                    }
+                });
             }
         },
-        isGamePlaying ? 1000 : null
+        state.isGamePlaying ? 1000 : null
     );
 
     const countdown = (time: TimeCountdown): TimeCountdown => {
@@ -104,39 +77,52 @@ const Game: React.FunctionComponent = () => {
 
     useEffect(() => {
         if (
-            (playerSelectedColor === PieceColor.WHITE &&
-                turn === PieceColor.WHITE) ||
-            (playerSelectedColor === PieceColor.BLACK &&
-                turn === PieceColor.BLACK)
+            (state.playerSelectedColor === PieceColor.WHITE &&
+                state.turn === PieceColor.WHITE) ||
+            (state.playerSelectedColor === PieceColor.BLACK &&
+                state.turn === PieceColor.BLACK)
         ) {
-            setIsCountdown1Pause(false);
-            setIsCountdown2Pause(true);
+            dispatch({
+                type: 'SET_COUNT_DOWN_PAUSE',
+                payload: 2 // player number
+            });
         } else {
-            setIsCountdown1Pause(true);
-            setIsCountdown2Pause(false);
+            dispatch({
+                type: 'SET_COUNT_DOWN_PAUSE',
+                payload: 1
+            });
         }
-    }, [turn, playerSelectedColor]);
+    }, [state.turn, state.playerSelectedColor, dispatch]);
 
     useEffect(() => {
         if (
-            (player1Countdown.minute === 0 && player1Countdown.second === 0) ||
-            (player2Countdown.minute === 0 && player2Countdown.second === 0)
+            (state.player1Countdown.minute === 0 &&
+                state.player1Countdown.second === 0) ||
+            (state.player2Countdown.minute === 0 &&
+                state.player2Countdown.second === 0)
         ) {
-            setIsGamePlaying(false);
+            dispatch({
+                type: 'SET_IS_GAME_PLAYING',
+                payload: false
+            });
         }
     }, [
-        player1Countdown.minute,
-        player1Countdown.second,
-        player2Countdown.minute,
-        player2Countdown.second
+        state.player1Countdown.minute,
+        state.player1Countdown.second,
+        state.player2Countdown.minute,
+        state.player2Countdown.second,
+        dispatch
     ]);
 
     const grabPiece = (e: React.MouseEvent): void => {
-        if (!isGamePlaying) {
+        if (!state.isGamePlaying) {
             return;
         }
 
-        setIsMouseDown(true);
+        dispatch({
+            type: 'SET_MOUSE_DOWN',
+            payload: true
+        });
 
         const element = e.target as HTMLElement;
         const chessBoard = chessBoardEl.current;
@@ -147,33 +133,57 @@ const Game: React.FunctionComponent = () => {
         if (element.classList.contains('chess-piece')) {
             const { x, y } = getBoardCoordinateUnderMouse(e, chessBoard);
 
-            const selectedPiece = squares[y][x];
-            if (selectedPiece !== null && selectedPiece!.color !== turn) {
+            const selectedPiece = state.squares[y][x];
+            if (selectedPiece !== null && selectedPiece!.color !== state.turn) {
                 return;
             } else {
-                setActivePieceCoordinate(null);
-                setActivePiece(null);
+                dispatch({
+                    type: 'SET_ACTIVE_PIECE_COORDINATE',
+                    payload: null
+                });
+                dispatch({
+                    type: 'SET_ACTIVE_PIECE',
+                    payload: null
+                });
             }
 
-            setActivePieceCoordinate({ x, y });
+            dispatch({
+                type: 'SET_ACTIVE_PIECE_COORDINATE',
+                payload: { x, y }
+            });
 
-            if (highlightedSquares.length !== 0) {
-                setHighlightedSquares([]);
+            if (state.highlightedSquares.length !== 0) {
+                dispatch({
+                    type: 'SET_HIGHLIGHTED_SQUARES',
+                    payload: []
+                });
             }
 
-            setHighlightedSquares([{ x, y }]);
+            dispatch({
+                type: 'SET_HIGHLIGHTED_SQUARES',
+                payload: [{ x, y }]
+            });
 
             element.style.position = 'absolute';
-            element.style.left = `${e.clientX - squareSize / 2}px`;
-            element.style.top = `${e.clientY - squareSize / 2}px`;
+            element.style.left = `${e.clientX - state.squareSize / 2}px`;
+            element.style.top = `${e.clientY - state.squareSize / 2}px`;
 
-            setActivePiece(element);
+            dispatch({
+                type: 'SET_ACTIVE_PIECE',
+                payload: element
+            });
 
-            const hints = selectedPiece!.getPossibleMoves({ x, y }, squares);
-            if (enPassant) {
-                hints.push(enPassant);
+            const hints = selectedPiece!.getPossibleMoves(
+                { x, y },
+                state.squares
+            );
+            if (state.enPassant) {
+                hints.push(state.enPassant);
             }
-            setHintSquares(hints);
+            dispatch({
+                type: 'SET_HINT_SQUARES',
+                payload: hints
+            });
         }
     };
 
@@ -183,48 +193,53 @@ const Game: React.FunctionComponent = () => {
             return;
         }
 
-        if (isMouseDown && activePiece) {
+        if (state.isMouseDown && state.activePiece) {
             const minX = chessBoard.offsetLeft,
-                maxX = minX + chessBoard.clientWidth - squareSize,
+                maxX = minX + chessBoard.clientWidth - state.squareSize,
                 minY = chessBoard.offsetTop,
-                maxY = minY + chessBoard.clientHeight - squareSize,
+                maxY = minY + chessBoard.clientHeight - state.squareSize,
                 x = e.clientX,
                 y = e.clientY;
 
             // prevent dragging piece out of the board
             if (x < minX) {
-                activePiece.style.left = `${minX}px`;
+                state.activePiece.style.left = `${minX}px`;
             } else if (x > maxX) {
-                activePiece.style.left = `${maxX}px`;
+                state.activePiece.style.left = `${maxX}px`;
             } else {
-                activePiece.style.left = `${x - squareSize / 2}px`;
+                state.activePiece.style.left = `${x - state.squareSize / 2}px`;
             }
 
             if (y < minY) {
-                activePiece.style.top = `${minY}px`;
+                state.activePiece.style.top = `${minY}px`;
             } else if (y > maxY) {
-                activePiece.style.top = `${maxY}px`;
+                state.activePiece.style.top = `${maxY}px`;
             } else {
-                activePiece.style.top = `${y - squareSize / 2}px`;
+                state.activePiece.style.top = `${y - state.squareSize / 2}px`;
             }
         }
     };
 
     const dropPiece = (e: React.MouseEvent): void => {
-        setIsMouseDown(false);
+        dispatch({
+            type: 'SET_MOUSE_DOWN',
+            payload: false
+        });
 
         const chessBoard = chessBoardEl.current;
         if (!chessBoard) {
             return;
         }
 
-        if (activePiece && activePieceCoordinate) {
-            const squaresCopy = squares.slice();
+        if (state.activePiece && state.activePieceCoordinate) {
+            const squaresCopy = state.squares.slice();
 
             const sourceSquare =
-                squaresCopy[activePieceCoordinate.y][activePieceCoordinate.x];
+                squaresCopy[state.activePieceCoordinate.y][
+                    state.activePieceCoordinate.x
+                ];
 
-            if (sourceSquare?.color !== turn) {
+            if (sourceSquare?.color !== state.turn) {
                 return;
             }
 
@@ -232,15 +247,15 @@ const Game: React.FunctionComponent = () => {
             const destinationSquare = squaresCopy[destination.y][destination.x];
 
             const isMovePossible: boolean = sourceSquare!.isMovePossible(
-                activePieceCoordinate,
+                state.activePieceCoordinate,
                 destination,
                 !!destinationSquare,
-                enPassant
+                state.enPassant
             );
 
             const srcToDestPath: Array<Coordinate> =
                 sourceSquare!.getSrcToDestPath(
-                    activePieceCoordinate,
+                    state.activePieceCoordinate,
                     destination
                 );
 
@@ -249,32 +264,43 @@ const Game: React.FunctionComponent = () => {
                 sourceSquare?.color !== destinationSquare?.color;
 
             if (isMovePossible && isLegal) {
-                setEnPassant(null);
+                dispatch({
+                    type: 'SET_EN_PASSANT',
+                    payload: null
+                });
+
                 setEnPassantMoveIfExist(
                     squaresCopy,
-                    activePieceCoordinate,
+                    state.activePieceCoordinate,
                     destination
                 );
 
                 const capturedPiece = squaresCopy[destination.y][destination.x];
                 if (capturedPiece !== null) {
                     if (capturedPiece.color === PieceColor.BLACK) {
-                        let capturePices = blackCapturedPieces;
+                        let capturePices = state.blackCapturedPieces;
                         capturePices.push(capturedPiece);
-                        setBlackCapturedPieces(capturePices);
+                        dispatch({
+                            type: 'SET_BLACK_CAPTURED_PIECES',
+                            payload: capturePices
+                        });
                     } else {
-                        let capturePices = whiteCapturedPieces;
+                        let capturePices = state.whiteCapturedPieces;
                         capturePices.push(capturedPiece);
-                        setWhiteCapturedPieces(capturePices);
+                        dispatch({
+                            type: 'SET_WHITE_CAPTURED_PIECES',
+                            payload: capturePices
+                        });
                     }
                 }
 
                 squaresCopy[destination.y][destination.x] =
-                    squaresCopy[activePieceCoordinate.y][
-                        activePieceCoordinate.x
+                    squaresCopy[state.activePieceCoordinate.y][
+                        state.activePieceCoordinate.x
                     ];
-                squaresCopy[activePieceCoordinate.y][activePieceCoordinate.x] =
-                    null;
+                squaresCopy[state.activePieceCoordinate.y][
+                    state.activePieceCoordinate.x
+                ] = null;
 
                 if (
                     squaresCopy[destination.y][
@@ -290,13 +316,19 @@ const Game: React.FunctionComponent = () => {
                         squaresCopy[destination.y + direction][destination.x];
                     if (capturedPiece !== null) {
                         if (capturedPiece.color === PieceColor.BLACK) {
-                            let capturePices = blackCapturedPieces;
+                            let capturePices = state.blackCapturedPieces;
                             capturePices.push(capturedPiece);
-                            setBlackCapturedPieces(capturePices);
+                            dispatch({
+                                type: 'SET_BLACK_CAPTURED_PIECES',
+                                payload: capturePices
+                            });
                         } else {
-                            let capturePices = whiteCapturedPieces;
+                            let capturePices = state.whiteCapturedPieces;
                             capturePices.push(capturedPiece);
-                            setWhiteCapturedPieces(capturePices);
+                            dispatch({
+                                type: 'SET_WHITE_CAPTURED_PIECES',
+                                payload: capturePices
+                            });
                         }
                     }
 
@@ -304,25 +336,32 @@ const Game: React.FunctionComponent = () => {
                         null;
                 }
 
-                setSquares(squaresCopy);
+                dispatch({
+                    type: 'UPDATE_SQUARES',
+                    payload: squaresCopy
+                });
 
-                let highlighted = highlightedSquares;
+                let highlighted = state.highlightedSquares;
                 highlighted.push({ x: destination.x, y: destination.y });
-                setHighlightedSquares(highlighted);
+                dispatch({
+                    type: 'SET_HIGHLIGHTED_SQUARES',
+                    payload: highlighted
+                });
 
-                setTurn(
-                    turn === PieceColor.WHITE
-                        ? PieceColor.BLACK
-                        : PieceColor.WHITE
-                );
+                dispatch({
+                    type: 'CHANGE_TURN'
+                });
 
-                setHintSquares([]);
+                dispatch({
+                    type: 'SET_HINT_SQUARES',
+                    payload: []
+                });
 
                 calculateScore();
             } else {
-                activePiece.style.position = 'relative';
-                activePiece.style.top = '0px';
-                activePiece.style.left = '0px';
+                state.activePiece.style.position = 'relative';
+                state.activePiece.style.top = '0px';
+                state.activePiece.style.left = '0px';
             }
         }
     };
@@ -331,8 +370,10 @@ const Game: React.FunctionComponent = () => {
         e: React.MouseEvent,
         board: HTMLDivElement
     ): Coordinate => {
-        const col = Math.floor((e.clientX - board.offsetLeft) / squareSize),
-            row = Math.floor((e.clientY - board.offsetTop) / squareSize);
+        const col = Math.floor(
+                (e.clientX - board.offsetLeft) / state.squareSize
+            ),
+            row = Math.floor((e.clientY - board.offsetTop) / state.squareSize);
 
         return {
             x: col,
@@ -342,7 +383,7 @@ const Game: React.FunctionComponent = () => {
 
     const isLegalMove = (srcToDestPath: Array<Coordinate>): boolean => {
         for (let coordinate of srcToDestPath) {
-            if (squares[coordinate.y][coordinate.x] !== null) {
+            if (state.squares[coordinate.y][coordinate.x] !== null) {
                 return false;
             }
         }
@@ -370,64 +411,99 @@ const Game: React.FunctionComponent = () => {
         ) {
             const direction = player === 1 ? 1 : -1;
 
-            setEnPassant({
-                x: dest.x,
-                y: dest.y + direction
+            dispatch({
+                type: 'SET_EN_PASSANT',
+                payload: {
+                    x: dest.x,
+                    y: dest.y + direction
+                }
             });
         }
     };
 
     const onColorSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (isGamePlaying) {
+        if (state.isGamePlaying) {
             return;
         }
 
         let selectedColor =
             PieceColor[e.target.value as keyof typeof PieceColor];
-        setSelectedColor(selectedColor);
+        dispatch({
+            type: 'SET_SELECTED_COLOR',
+            payload: selectedColor
+        });
 
         if (selectedColor === PieceColor.RANDOM) {
             selectedColor = Math.floor(Math.random() * 2);
         }
 
-        setPlayerSelectedColor(selectedColor);
-        setSquares(initialiseChessBoard(selectedColor));
+        dispatch({
+            type: 'SET_PLAYER_SELECTED_COLOR',
+            payload: selectedColor
+        });
+        dispatch({
+            type: 'UPDATE_SQUARES',
+            payload: initialiseChessBoard(selectedColor)
+        });
     };
 
     const onTimeLimitSelected = (
         e: React.ChangeEvent<HTMLSelectElement>
     ): void => {
         const timeLimit = Number(e.target.value);
-        setSelectedTimeLimit(timeLimit);
-        setPlayer1Coundown({
-            minute: timeLimit,
-            second: 0
+        dispatch({
+            type: 'SET_SELECTED_TIME_LIMIT',
+            payload: timeLimit
         });
-        setPlayer2Coundown({
-            minute: timeLimit,
-            second: 0
+
+        dispatch({
+            type: 'SET_PLAYER_COUNT_DOWN',
+            payload: {
+                player: 1,
+                minute: timeLimit,
+                second: 0
+            }
+        });
+
+        dispatch({
+            type: 'SET_PLAYER_COUNT_DOWN',
+            payload: {
+                player: 2,
+                minute: timeLimit,
+                second: 0
+            }
         });
     };
 
     const handleStartGame = (): void => {
-        setIsGamePlaying(true);
+        dispatch({
+            type: 'SET_IS_GAME_PLAYING',
+            payload: true
+        });
     };
 
     const calculateScore = (): void => {
         let whiteScore = 0;
-        for (let piece of blackCapturedPieces) {
+        for (let piece of state.blackCapturedPieces) {
             whiteScore += piece.value;
         }
 
         let blackScore = 0;
-        for (let piece of whiteCapturedPieces) {
+        for (let piece of state.whiteCapturedPieces) {
             blackScore += piece.value;
         }
 
         const diff = Math.abs(whiteScore - blackScore);
 
-        setWhiteScore(whiteScore > blackScore ? diff : 0);
-        setBlackScore(blackScore > whiteScore ? diff : 0);
+        dispatch({
+            type: 'SET_WHITE_SCORE',
+            payload: whiteScore > blackScore ? diff : 0
+        });
+
+        dispatch({
+            type: 'SET_BLACK_SCORE',
+            payload: blackScore > whiteScore ? diff : 0
+        });
     };
 
     return (
@@ -438,40 +514,34 @@ const Game: React.FunctionComponent = () => {
                     username='user 2'
                 />
                 <Clock
-                    playerSelectedColor={
-                        playerSelectedColor === PieceColor.WHITE
+                    color={
+                        state.playerSelectedColor === PieceColor.WHITE
                             ? PieceColor.BLACK
                             : PieceColor.WHITE
                     }
-                    countdown={player2Countdown}
-                    isPause={isCountdown2Pause}
+                    countdown={state.player2Countdown}
+                    isPause={state.isCountdown2Pause}
                 />
                 <CapturedPieces
                     color={
-                        playerSelectedColor === PieceColor.WHITE
+                        state.playerSelectedColor === PieceColor.WHITE
                             ? PieceColor.WHITE
                             : PieceColor.BLACK
                     }
                     capturedPieces={
-                        playerSelectedColor === PieceColor.WHITE
-                            ? whiteCapturedPieces
-                            : blackCapturedPieces
+                        state.playerSelectedColor === PieceColor.WHITE
+                            ? state.whiteCapturedPieces
+                            : state.blackCapturedPieces
                     }
                     capturedPiecesScore={
-                        playerSelectedColor === PieceColor.WHITE
-                            ? blackScore
-                            : whiteScore
+                        state.playerSelectedColor === PieceColor.WHITE
+                            ? state.blackScore
+                            : state.whiteScore
                     }
                 />
             </PlayerSection>
             <Board
                 ref={chessBoardEl}
-                boardSize={boardSize}
-                squareSize={squareSize}
-                squares={squares}
-                highlightedSquares={highlightedSquares}
-                hintSquares={hintSquares}
-                playerSelectedColor={playerSelectedColor}
                 onMouseDown={(e) => grabPiece(e)}
                 onMouseMove={(e) => movePiece(e)}
                 onMouseUp={(e) => dropPiece(e)}
@@ -482,32 +552,29 @@ const Game: React.FunctionComponent = () => {
                     username='user 1'
                 />
                 <Clock
-                    playerSelectedColor={playerSelectedColor}
-                    countdown={player1Countdown}
-                    isPause={isCountdown1Pause}
+                    color={state.playerSelectedColor}
+                    countdown={state.player1Countdown}
+                    isPause={state.isCountdown1Pause}
                 />
                 <CapturedPieces
                     color={
-                        playerSelectedColor === PieceColor.WHITE
+                        state.playerSelectedColor === PieceColor.WHITE
                             ? PieceColor.BLACK
                             : PieceColor.WHITE
                     }
                     capturedPieces={
-                        playerSelectedColor === PieceColor.WHITE
-                            ? blackCapturedPieces
-                            : whiteCapturedPieces
+                        state.playerSelectedColor === PieceColor.WHITE
+                            ? state.blackCapturedPieces
+                            : state.whiteCapturedPieces
                     }
                     capturedPiecesScore={
-                        playerSelectedColor === PieceColor.WHITE
-                            ? whiteScore
-                            : blackScore
+                        state.playerSelectedColor === PieceColor.WHITE
+                            ? state.whiteScore
+                            : state.blackScore
                     }
                 />
             </PlayerSection>
             <GameInfo
-                selectedColor={selectedColor}
-                timeLimits={timeLimits}
-                selectedTime={selectedTimeLimit}
                 handleSelectTimeLimit={onTimeLimitSelected}
                 handleSelectPieceColor={onColorSelected}
                 startGame={handleStartGame}

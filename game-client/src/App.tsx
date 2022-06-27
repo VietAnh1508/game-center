@@ -1,7 +1,13 @@
 import Game from './components/game/Game';
 
+import { GameContextProvider } from './context/game-context';
+
 function App() {
-    return <Game />;
+    return (
+        <GameContextProvider>
+            <Game />
+        </GameContextProvider>
+    );
 }
 
 export default App;

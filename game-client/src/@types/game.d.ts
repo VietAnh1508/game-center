@@ -1,3 +1,8 @@
+export type TimeCountdown = {
+    minute: number;
+    second: number;
+};
+
 export type IGame = {
     boardSize: number;
     squareSize: number;
@@ -15,4 +20,11 @@ export type IGame = {
     whiteCapturedPieces: Array<Piece>;
     blackScore: number;
     whiteScore: number;
+    isGamePlaying: boolean;
+    timeLimits: Array<number>;
+    selectedTimeLimit: number;
+    player1Countdown: TimeCountdown;
+    player2Countdown: TimeCountdown;
+    isCountdown1Pause: boolean;
+    isCountdown2Pause: boolean;
 };
